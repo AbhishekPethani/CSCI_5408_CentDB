@@ -1,0 +1,6 @@
+table1.tb
+	stu_id:int(10)
+	stu_name:varchar(50)
+table2.tb
+	course_id:int(10)
+	course_name:varchar(100)
