@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FileParsing implements FileParsingInterface {
+public class FileParsingForClient implements FileParsingForClientInterface {
 	
 	public void addUserInfo (String userName, String password) {
 		File userFile = new File("File/User/user.txt");
@@ -53,6 +53,6 @@ public class FileParsing implements FileParsingInterface {
 			e.printStackTrace();
 		}
 		return userMap;
-	}	
+	}
 	
 }

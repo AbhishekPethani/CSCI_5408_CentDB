@@ -1,22 +1,20 @@
 package fileParsing;
 
 import static org.junit.Assert.*;
-
 import org.junit.Assert;
 import org.junit.Test;
+import file_parsing.FileParsingForClient;
 
-import file_parsing.FileParsing;
-
-public class FileParsingTest {
+public class FileParsingForClientTest {
 
 	@Test
 	public void checkIsPasswordCorrectTest() {
-		FileParsing fileParsing = new FileParsing();
+		FileParsingForClient fileParsing = new FileParsingForClient();
 		Assert.assertTrue(fileParsing.checkIsPasswordCorrect("zhaoling", "beibeiQQ159"));
 	}
 	@Test
 	public void checkIsUserExistTest() {
-		FileParsing fileParsing = new FileParsing();
+		FileParsingForClient fileParsing = new FileParsingForClient();
 		Assert.assertTrue(fileParsing.checkIsUserExist("zhaoling"));
 	}
 

@@ -1,0 +1,2 @@
+_id:Integer/age:Integer/name:String/sex:String/student_id:String/
+1/24/Zhaoling Sun/female/B00871417/
