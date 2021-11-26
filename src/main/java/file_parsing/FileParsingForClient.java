@@ -49,6 +49,7 @@ public class FileParsingForClient implements FileParsingForClientInterface {
 				String value = string.split(":")[1];
 				userMap.put(key, value);
 			}
+			in.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
