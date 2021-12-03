@@ -1,6 +1,13 @@
-table1.tb
-	stu_id:int(10)
-	stu_name:varchar(50)
-table2.tb
+table1
+	_id:Integer
+	age:Integer
+	name:String
+	sex:String
+	P-student_id:String
+	table1 - student_id (1) -> table2 - stu_id (m) 
+table2
+	_id:Integer
 	course_id:int(10)
+	F-stu_id:int(10)
 	course_name:varchar(100)
+	table2 - stu_id (m) -> table1 - student_id (1) 

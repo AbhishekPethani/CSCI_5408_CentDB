@@ -1,3 +1,2 @@
-<stu_id:int(10)><stu_name:varchar(50)>
-[1/abhishek]
-[2/pethani]
+_id:Integer/age:Integer/name:String/sex:String/student_id:String:(P)/
+1/24/Zhaoling Sun/female/B00871417/
