@@ -1,0 +1,4 @@
+_id:Integer/course_id:int(10):(P)/student_id:String:(F)/course_name:varchar(100)/
+1/csci_5100/1/CS/
+2/csci_5408/1/DMWA/
+3/csci_5408/3/DMWA/
