@@ -1,13 +1,22 @@
 table1
-	_id:Integer
-	age:Integer
-	name:String
-	sex:String
-	P-student_id:String
-	table1 - student_id (1) -> table2 - stu_id (m) 
+	_id Integer
+	student_id String PK
+	age Integer
+	name String
+	sex String
+
 table2
-	_id:Integer
-	course_id:int(10)
-	F-stu_id:int(10)
-	course_name:varchar(100)
-	table2 - stu_id (m) -> table1 - student_id (1) 
+	_id Integer
+	course_id int(10) PK
+	student_id String FK
+	course_name varchar(100)
+
+table3
+	_id Integer
+	exam_id int(10) PK
+	student_id String FK
+	course_id int(10) FK
+
+table2 - course_id (1) -> table3 - course_id (M) 
+table1 - student_id (1) -> table2 - student_id (M) 
+table1 - student_id (1) -> table3 - student_id (M) 
