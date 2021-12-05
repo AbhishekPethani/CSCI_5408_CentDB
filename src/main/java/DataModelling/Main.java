@@ -1,4 +1,4 @@
-package data_modelling;
+package DataModelling;
 
 public class Main {
 
