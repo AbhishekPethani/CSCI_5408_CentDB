@@ -1,4 +1,4 @@
-package file_parsing;
+package FileParsing;
 
 public class Main {
 

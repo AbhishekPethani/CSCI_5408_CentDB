@@ -1,4 +1,4 @@
-package file_parsing;
+package FileParsing;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,10 +9,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author zhaoling
+ */
 public class FileParsingForClient implements FileParsingForClientInterface {
 	
 	public void addUserInfo (String userName, String password) {
-		File userFile = new File("File/User/user.txt");
+		File userFile = new File("File/User/user.tb");
 		try {
 			userFile.createNewFile();
 			BufferedWriter out = new BufferedWriter(new FileWriter(userFile, true));
@@ -39,7 +42,7 @@ public class FileParsingForClient implements FileParsingForClientInterface {
 
 	public Map<String, String> transToKeyValueUser () {
 		Map<String, String> userMap = new HashMap<String, String>();
-		File userFile = new File("File/User/user.txt");
+		File userFile = new File("File/User/user.tb");
 		try {
 			userFile.createNewFile();
 			BufferedReader in = new BufferedReader(new FileReader(userFile));
