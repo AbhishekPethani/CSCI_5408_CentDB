@@ -23,4 +23,12 @@ public interface FileOperationInterface {
 	
 	public void reportToLog (String databaseName);
 	
+	public List<String> getTableNames (String databaseName);
+	
+	public List<String> getDatabaseNames();
+	
+	public List<Map<String, Object>> getColumnInfo(String tableName);
+	
+	public void createMetaData ();
+	
 }

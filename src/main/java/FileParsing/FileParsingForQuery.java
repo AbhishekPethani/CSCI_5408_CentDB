@@ -20,7 +20,7 @@ import java.util.TreeMap;
  * @createDate: 2021-11-24  
  * @updateUser: zhaoling 
  * @updateDate: 2021-12-5
- * @updateRemark: modify return,
+ * @updateRemark: modify return type.
  * @version: v1.3
  */
 
@@ -38,6 +38,7 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 		if (!file.exists()) {
 			file.mkdirs();
 		}
+		fileOperation.createMetaData();
 		return true;
 	}
 	
@@ -68,6 +69,7 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			out.flush();
 			out.close();
 			fileOperation.reportToLog(databaseName);
+			fileOperation.createMetaData();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -182,6 +184,7 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
 		fileOperation.reportToLog(databaseName);
+		fileOperation.createMetaData();
 		return tableFile.delete();
 	}
 	
@@ -194,6 +197,7 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
             	return false;
         }
         this.databaseName = "";
+		fileOperation.createMetaData();
         return databaseDir.delete();
 	}
 	

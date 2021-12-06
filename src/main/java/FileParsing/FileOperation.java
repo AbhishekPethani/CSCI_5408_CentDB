@@ -1,12 +1,15 @@
 package FileParsing;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +23,9 @@ import java.util.TreeMap;
  * @author: zhaoling 
  * @createDate: 2021-12-3  
  * @updateUser: zhaoling 
- * @updateDate: 2021-12-5
- * @updateRemark: add getDatabaseInfo and reportToLog methods .
- * @version: v1.1
+ * @updateDate: 2021-12-6
+ * @updateRemark: add create Metadata, get some info .
+ * @version: v1.2
  */
 public class FileOperation implements FileOperationInterface {
 
@@ -35,7 +38,7 @@ public class FileOperation implements FileOperationInterface {
 			String header = in.readLine();
 			String[] columnKeyType = header.split("/");
 			for (String s : columnKeyType) {
-				tableColumnMap.put(s.split(":")[0], s.split(":")[1]);
+				tableColumnMap.put(s.split(":", 2)[0], s.split(":", 2)[1]);
 			}
 			in.close();
 		} catch (IOException e) {
@@ -149,6 +152,7 @@ public class FileOperation implements FileOperationInterface {
 		Long recordCountTotal = 0L;
 		List<Map<String, Long>> tables = new ArrayList<Map<String, Long>>();
 		getDatabaseInfo(databaseName, tableCount, recordCountTotal, tables);
+		
 //		GeneralLogsImpl generalLogsImpl = new GeneralLogsImpl();
 //		GeneralLogsModel generalLogsModel = new GeneralLogsModel();
 //		generalLogsModel.setTableCount(tableCount);
@@ -157,4 +161,110 @@ public class FileOperation implements FileOperationInterface {
 //		generalLogsImpl.generalLogsEntry(generalLogsModel);
 	}
 	
+	public List<String> getTableNames (String databaseName) {
+		List<String> tableNames = new ArrayList<String>();
+		String dirName = "File/DBDemo/" + databaseName;
+		File databaseDir = new File(dirName);
+		File[] listFiles = databaseDir.listFiles();
+        for (File file : listFiles) {
+			tableNames.add(file.getName().substring(0, file.getName().length()-3));
+        }
+		return tableNames;
+	}
+	
+	public List<String> getDatabaseNames () {
+		List<String> databaseNames = new ArrayList<String>();
+		String dirName = "File/DBDemo/";
+		File databaseDir = new File(dirName);
+		File[] listFiles = databaseDir.listFiles();
+        for (File file : listFiles) {
+        	if(file.isDirectory())
+        		databaseNames.add(file.getName());
+        }
+		return databaseNames;
+	}
+	
+	public List<Map<String, Object>> getColumnInfo(String tableName) {
+		List<Map<String, Object>> columnInfos = new ArrayList<Map<String, Object>>();
+		String dir = "File/DBDemo/";
+		File Dir = new File(dir);
+        for (File file : Dir.listFiles()) {
+        	if(!file.isDirectory())
+        		continue;
+        	String databaseName = file.getName();
+        	File databaseDir = new File("File/DBDemo/"+databaseName);
+        	for (File table : databaseDir.listFiles()) {
+        		if (!table.getName().equals(tableName + ".tb"))
+        			continue;
+        		TreeMap<String, String> columns = getTableHeader("File/DBDemo/"+databaseName + "/" + table.getName());
+        		for (String columnName : columns.keySet()) {
+        			List<String> constrain = new ArrayList<String>();
+        			constrain = new ArrayList<String>(Arrays.asList(columns.get(columnName).split(":")));
+        			Map<String, Object> columnInfo = new HashMap<String, Object>();
+        			columnInfo.put("columnName", columnName);
+    				columnInfo.put("primaryKey", false);
+    				columnInfo.put("foreignKey", false);
+    				columnInfo.put("not null", false);
+    				columnInfo.put("unique", false);
+        			if (constrain.contains("primaryKey"))
+        				columnInfo.put("primaryKey", true);
+        			if (constrain.contains("foreignKey"))
+        				columnInfo.put("foreignKey", true);
+        			if (constrain.contains("not null"))
+        				columnInfo.put("not null", true);
+        			if (constrain.contains("unique"))
+        				columnInfo.put("unique", true);
+        			columnInfos.add(columnInfo);
+        		}
+        	}
+        }
+		return columnInfos;
+	}
+	
+	public void createMetaData () {
+		String dir = "File/DBDemo/";
+		File Dir = new File(dir);
+		File[] listFiles = Dir.listFiles();
+    	List<String> MetaDatas = new ArrayList<String>();
+        for (File file : listFiles) {
+        	String databaseName = "";
+        	if(!file.isDirectory())
+        		continue;
+    		MetaDatas.add("{");
+        	databaseName = file.getName();
+        	MetaDatas.add("\tdatabase:" + databaseName);
+        	MetaDatas.add("\ttable:{");
+        	File databaseDir = new File("File/DBDemo/"+databaseName);
+        	for (File table : databaseDir.listFiles()) {
+        		String tableName = table.getName().substring(0, table.getName().length()-3);
+        		MetaDatas.add("\t\t\t" + tableName + ":{");
+        		TreeMap<String, String> columns = getTableHeader("File/DBDemo/"+databaseName + "/" + table.getName());
+        		//System.out.println(columns);
+        		for (String column : columns.keySet()) {
+        			String columnInfo = "";
+        			columnInfo += "\t\t\t\t\t\t\t" + column + ":" + columns.get(column).replaceAll(":", "|");
+        			MetaDatas.add(columnInfo);
+        		}
+        		MetaDatas.add("\t\t\t\t\t\t}");
+        	}
+    		MetaDatas.add("\t\t\t}");
+    		MetaDatas.add("};");
+        }
+		File dbFile = new File("File");
+		if (!dbFile.exists()) {
+			dbFile.mkdirs();
+		}
+		File tableFile = new File("File/MetaData.tb");
+		BufferedWriter out;
+		try {
+			out = new BufferedWriter(new FileWriter(tableFile));
+			for (String metaData : MetaDatas) {
+				out.write(metaData + "\r\n");
+			}
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

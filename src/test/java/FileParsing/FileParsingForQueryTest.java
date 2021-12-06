@@ -26,7 +26,7 @@ public class FileParsingForQueryTest {
 //		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
 //		List<Map<String, Object>> columnInfos = new ArrayList<Map<String, Object>>();
 //		Map<String, Object> columnInfo1 = new HashMap<String, Object>();
-//		columnInfo1.put("columnName", "professorId");
+//		columnInfo1.put("columnName", "studentId");
 //		columnInfo1.put("dataType", "Integer");
 //		columnInfo1.put("primaryKey", true);
 //		columnInfo1.put("foreignKey", false);
@@ -49,19 +49,19 @@ public class FileParsingForQueryTest {
 //		columnInfo3.put("not null", true);
 //		columnInfo3.put("unique", true);
 //		columnInfos.add(columnInfo3);
-//		fileParsingForQuery.setDatabaseName("student");
-//		fileParsingForQuery.createTable("professorInfo", columnInfos);
+//		fileParsingForQuery.setDatabaseName("university");
+//		fileParsingForQuery.createTable("studentInfo", columnInfos);
 //	}
 	@Test
 	public void insertIntoTableTest () {
 		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
 		TreeMap<String, Object> insertColumnAndValue = new TreeMap<String, Object>();
-		insertColumnAndValue.put("professorId", "B00871417");
-		insertColumnAndValue.put("name", "zhaoling");
-		insertColumnAndValue.put("courseId", 5408);
+		insertColumnAndValue.put("studentId", "B00999999");
+		insertColumnAndValue.put("name", "Julie");
+		insertColumnAndValue.put("courseId", 5308);
 		//insertColumnAndValue.put("sex", "male");
-		fileParsingForQuery.setDatabaseName("student");
-		fileParsingForQuery.insertIntoTable(insertColumnAndValue, "professorInfo");
+		fileParsingForQuery.setDatabaseName("university");
+		fileParsingForQuery.insertIntoTable(insertColumnAndValue, "studentInfo");
 	}
 //	@Test
 //	public void updateDataTableTest () {
