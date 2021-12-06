@@ -22,6 +22,7 @@ public class LogDirectorySetup {
      *
      * @return The method return File class instance logFilesDirectory which contains relative path of log_files
      * directory.
+     *
      * @implNote User of this method needs to create instance of LogDirectorySetup class and call this method using
      * the instance while making log entry inside any kind of log.
      */
