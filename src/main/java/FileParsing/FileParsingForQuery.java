@@ -19,9 +19,9 @@ import java.util.TreeMap;
  * @author: zhaoling 
  * @createDate: 2021-11-24  
  * @updateUser: zhaoling 
- * @updateDate: 2021-11-25
- * @updateRemark: modify function "createTable", change file type,
- * @version: v1.2
+ * @updateDate: 2021-12-5
+ * @updateRemark: modify return,
+ * @version: v1.3
  */
 
 public class FileParsingForQuery implements FileParsingForQueryInterface {
@@ -33,14 +33,15 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 		this.databaseName = databaseName;
 	}
 	
-	public void createDatabase (String databaseName) {
+	public Boolean createDatabase (String databaseName) {
 		File file = new File("File/DBDemo/"+databaseName);
 		if (!file.exists()) {
 			file.mkdirs();
 		}
+		return true;
 	}
 	
-	public void createTable (String tableName, List<Map<String, Object>> columnInfos) {
+	public Boolean createTable (String tableName, List<Map<String, Object>> columnInfos) {
 		File dbFile = new File("File/DBDemo/" + databaseName);
 		if (!dbFile.exists()) {
 			dbFile.mkdirs();
@@ -66,12 +67,15 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			out.write(header + "\r\n");
 			out.flush();
 			out.close();
+			fileOperation.reportToLog(databaseName);
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
-	public void insertIntoTable (TreeMap<String, Object> insertColumnAndValue, String tableName) {
+	public Boolean insertIntoTable (TreeMap<String, Object> insertColumnAndValue, String tableName) {
 		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
 		TreeMap<String, String> tableColumnMap = fileOperation.getTableHeader(tableFileName);
@@ -93,12 +97,15 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			out.write(insertLine + "\r\n");
 			out.flush();
 			out.close();
+			fileOperation.reportToLog(databaseName);
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
-	public void updateDataTable (TreeMap<String, Object> updateColumnAndValue, String tableName, TreeMap<String, List<Object>> conditionColumnAndValue) {
+	public Boolean updateDataTable (TreeMap<String, Object> updateColumnAndValue, String tableName, TreeMap<String, List<Object>> conditionColumnAndValue) {
 		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
 		String header = fileOperation.getHeaderString(tableFileName);
@@ -128,13 +135,16 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			}
 			out.flush();
 			out.close();
+			fileOperation.reportToLog(databaseName);
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 		
 	}
 	
-	public void deleteDataInTable (String tableName, TreeMap<String, List<Object>> conditionColumnAndValue) {
+	public Boolean deleteDataInTable (String tableName, TreeMap<String, List<Object>> conditionColumnAndValue) {
 		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
 		TreeMap<String, String> tableColumnMap = fileOperation.getTableHeader(tableFileName);
@@ -160,26 +170,31 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			}
 			out.flush();
 			out.close();
+			fileOperation.reportToLog(databaseName);
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
-	public void deleteTable (String tableName) {
+	public Boolean deleteTable (String tableName) {
 		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
-		tableFile.delete();
+		fileOperation.reportToLog(databaseName);
+		return tableFile.delete();
 	}
 	
-	public void deleteDatabase (String databaseName) {
+	public Boolean deleteDatabase (String databaseName) {
 		String dirName = "File/DBDemo/" + databaseName;
 		File databaseDir = new File(dirName);
 		File[] listFiles = databaseDir.listFiles();
         for (File file : listFiles) {
-            file.delete();
+            if (!file.delete())
+            	return false;
         }
-        databaseDir.delete();
         this.databaseName = "";
+        return databaseDir.delete();
 	}
 	
 	public List<TreeMap<String, String>> selectFromTable (List<String> selectColumn, String tableName, TreeMap<String, List<Object>> conditionColumnAndValue) {

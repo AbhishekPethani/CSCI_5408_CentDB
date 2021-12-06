@@ -2,13 +2,27 @@ package FileParsing;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * @author zhaoling
+ * @projectName: centdb_g16
+ * @package: FileParsing
+ * @className: FileOperation
+ * @description: some basic operation to file
+ * @author: zhaoling 
+ * @createDate: 2021-12-3  
+ * @updateUser: zhaoling 
+ * @updateDate: 2021-12-5
+ * @updateRemark: add getDatabaseInfo and reportToLog methods .
+ * @version: v1.1
  */
 public class FileOperation implements FileOperationInterface {
 
@@ -102,6 +116,45 @@ public class FileOperation implements FileOperationInterface {
 			e.printStackTrace();
 		}
 		return headerString;
+	}
+	
+	public void getDatabaseInfo (String databaseName, Long tableCount, Long recordCountTotal, List<Map<String, Long>> tables) {
+		String dirName = "File/DBDemo/" + databaseName;
+		File databaseDir = new File(dirName);
+		File[] listFiles = databaseDir.listFiles();
+		tableCount = 0L;
+		recordCountTotal = 0L;
+        for (File file : listFiles) {
+        	Map<String, Long> table = new HashMap<String, Long>();
+            tableCount++;
+            LineNumberReader lineNumberReader;
+			try {
+				lineNumberReader = new LineNumberReader(new FileReader(dirName + "/" + file.getName()));
+				lineNumberReader.skip(Long.MAX_VALUE);
+				int id = lineNumberReader.getLineNumber() - 1;
+				recordCountTotal += id;
+				lineNumberReader.close();
+				table.put(file.getName().substring(0, file.getName().length()-3), Long.valueOf(id));
+				tables.add(table);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+	}
+	
+	public void reportToLog (String databaseName) {
+		Long tableCount = 0L;
+		Long recordCountTotal = 0L;
+		List<Map<String, Long>> tables = new ArrayList<Map<String, Long>>();
+		getDatabaseInfo(databaseName, tableCount, recordCountTotal, tables);
+//		GeneralLogsImpl generalLogsImpl = new GeneralLogsImpl();
+//		GeneralLogsModel generalLogsModel = new GeneralLogsModel();
+//		generalLogsModel.setTableCount(tableCount);
+//		generalLogsModel.setRecordCount(recordCountTotal);
+//		generalLogsModel.setTableList(tables);
+//		generalLogsImpl.generalLogsEntry(generalLogsModel);
 	}
 	
 }

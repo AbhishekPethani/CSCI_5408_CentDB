@@ -1,6 +1,7 @@
 package FileParsing;
 
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -18,6 +19,8 @@ public interface FileOperationInterface {
 	
 	public String getHeaderString (String tableFileName);
 	
+	public void getDatabaseInfo (String databaseName, Long tableCount, Long recordCountTotal, List<Map<String, Long>> tables);
 	
+	public void reportToLog (String databaseName);
 	
 }
