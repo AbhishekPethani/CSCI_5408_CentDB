@@ -1,4 +1,0 @@
-_id:Integer/exam_id:int(10):pk:not null/student_id:String:fk/course_id:int(10):fk/
-1/e1/24/csci_5100/
-2/e2/24/csci_5408/
-3/e2/24/csci_5408/

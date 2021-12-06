@@ -1,22 +1,19 @@
-table1
+courseInfo
 	_id Integer
-	student_id String PK
-	age Integer
+	courseId Integer PRIMARY_KEY
 	name String
-	sex String
 
-table2
+professorInfo
 	_id Integer
-	course_id int(10) PK
-	student_id String FK
-	course_name varchar(100)
+	professorId Integer PRIMARY_KEY
+	name String
+	courseId Integer FOREIGN_KEY
 
-table3
+studentInfo
 	_id Integer
-	exam_id int(10) PK
-	student_id String FK
-	course_id int(10) FK
+	studentId Integer PRIMARY_KEY
+	name String
+	courseId Integer FOREIGN_KEY
 
-table2 - course_id (1) -> table3 - course_id (M) 
-table1 - student_id (1) -> table2 - student_id (M) 
-table1 - student_id (1) -> table3 - student_id (M) 
+courseInfo - courseId (1) -> professorInfo - courseId (1) 
+courseInfo - courseId (1) -> studentInfo - courseId (M) 
