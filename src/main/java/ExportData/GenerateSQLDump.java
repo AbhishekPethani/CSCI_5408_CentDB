@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GenerateSQLDump implements IGenerateSQLDump {
-private String databaseName;
+	private String databaseName;
 	
 	public GenerateSQLDump(String databaseName) {
 		this.databaseName = databaseName;
@@ -22,7 +22,8 @@ private String databaseName;
 		
 		File sqlDumpFile = new File("Databases/" + databaseName + "/" + databaseName + "_dump.sql");
 		BufferedWriter bf = new BufferedWriter(new FileWriter(sqlDumpFile));
-
+		
+		bf.write("CREATE DATABASE " + databaseName + ";\n\n");
 		for(File table : tables) {
 			if(!(table.getName().contains("_ERD.txt") || table.getName().contains("_dump.sql"))) {
 				bf.write(createTable(table, tables));
@@ -42,25 +43,17 @@ private String databaseName;
 			BufferedReader br = new BufferedReader(new FileReader(table));
 			String columnText = br.readLine();
 			
-//			List<String> columns = new ArrayList<String>();
-//			Pattern pattern = Pattern.compile("<(.*?)>", Pattern.DOTALL);
-//			Matcher matcher = pattern.matcher(columnText);
-//						
-//			while(matcher.find()) {
-//				columns.add(matcher.group(1));
-//			}
-			
 			List<String> columns = Arrays.asList(columnText.split("/"));
 			String primaryKey = "";
 			String foreignKey = "";
 			for(String column : columns) {
 				String splitData[] = column.split(":");
 				// add primary key
-				if(splitData.length == 3 && splitData[2].equals("(P)")) {
+				if(splitData.length > 2 && splitData[2].equals("pk")) {
 					primaryKey = "\tPRIMARY KEY (" + splitData[0] +")";
 				}
 				// add foreign key
-				if(splitData.length == 3 && splitData[2].equals("(F)")) {
+				if(splitData.length > 2 && splitData[2].equals("fk")) {
 					String tableReference = findTableReference(splitData[0], tableName, tables);
 					foreignKey = "\tFOREIGN KEY (" + splitData[0] +") REFERENCES " + tableReference + "(" + splitData[0] +")";
 					primaryKey += ",";
@@ -118,9 +111,6 @@ private String databaseName;
 			}else {
 				insertQuery += ", (";
 			}
-//			Pattern dataPattern = Pattern.compile("\\[(.*?)\\]", Pattern.DOTALL);
-//			Matcher dataMatcher = dataPattern.matcher(data);
-//			dataMatcher.find();
 			String row[] = data.split("/");
 			for(int i=0; i < row.length; i++) {
 				if(i == row.length -1) {
