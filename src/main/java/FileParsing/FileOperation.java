@@ -15,6 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import log_management.EventLogsImpl;
+import log_management.GeneralLogsImpl;
+import log_management.constant.Event;
+import log_management.model.EventLogsModel;
+import log_management.model.GeneralLogsModel;
+
 /**
  * @projectName: centdb_g16
  * @package: FileParsing
@@ -87,6 +93,14 @@ public class FileOperation implements FileOperationInterface {
 					break;
 				}
 			}
+			if (conditionColumnAndValue.get(c).get(0).toString().equals("!=")) {
+				if (!conditionColumnAndValue.get(c).get(1).toString().equals(columnRow.get(c)))
+					continue;
+				else {
+					isFit = false;
+					break;
+				}
+			}
 			if (conditionColumnAndValue.get(c).get(0).toString().equals(">")) {
 				if (Integer.parseInt(columnRow.get(c)) > (Integer)conditionColumnAndValue.get(c).get(1))
 					continue;
@@ -97,6 +111,22 @@ public class FileOperation implements FileOperationInterface {
 			}
 			if (conditionColumnAndValue.get(c).get(0).toString().equals("<")) {
 				if (Integer.parseInt(columnRow.get(c)) < (Integer)conditionColumnAndValue.get(c).get(1))
+					continue;
+				else {
+					isFit = false;
+					break;
+				}
+			}
+			if (conditionColumnAndValue.get(c).get(0).toString().equals("<=")) {
+				if (Integer.parseInt(columnRow.get(c)) <= (Integer)conditionColumnAndValue.get(c).get(1))
+					continue;
+				else {
+					isFit = false;
+					break;
+				}
+			}
+			if (conditionColumnAndValue.get(c).get(0).toString().equals(">=")) {
+				if (Integer.parseInt(columnRow.get(c)) >= (Integer)conditionColumnAndValue.get(c).get(1))
 					continue;
 				else {
 					isFit = false;
@@ -121,11 +151,11 @@ public class FileOperation implements FileOperationInterface {
 		return headerString;
 	}
 	
-	public void getDatabaseInfo (String databaseName, Long tableCount, Long recordCountTotal, List<Map<String, Long>> tables) {
+	public void getDatabaseInfo (String databaseName, int tableCount, Long recordCountTotal, List<Map<String, Long>> tables) {
 		String dirName = "File/DBDemo/" + databaseName;
 		File databaseDir = new File(dirName);
 		File[] listFiles = databaseDir.listFiles();
-		tableCount = 0L;
+		tableCount = 0;
 		recordCountTotal = 0L;
         for (File file : listFiles) {
         	Map<String, Long> table = new HashMap<String, Long>();
@@ -148,17 +178,30 @@ public class FileOperation implements FileOperationInterface {
 	}
 	
 	public void reportToLog (String databaseName) {
-		Long tableCount = 0L;
+		int tableCount = 0;
 		Long recordCountTotal = 0L;
 		List<Map<String, Long>> tables = new ArrayList<Map<String, Long>>();
 		getDatabaseInfo(databaseName, tableCount, recordCountTotal, tables);
 		
-//		GeneralLogsImpl generalLogsImpl = new GeneralLogsImpl();
-//		GeneralLogsModel generalLogsModel = new GeneralLogsModel();
-//		generalLogsModel.setTableCount(tableCount);
-//		generalLogsModel.setRecordCount(recordCountTotal);
-//		generalLogsModel.setTableList(tables);
-//		generalLogsImpl.generalLogsEntry(generalLogsModel);
+		GeneralLogsImpl generalLogsImpl = new GeneralLogsImpl();
+		GeneralLogsModel generalLogsModel = new GeneralLogsModel();
+		generalLogsModel.setTableCount(tableCount);
+		generalLogsModel.setRecordCount(recordCountTotal);
+		generalLogsModel.setTableList(tables);
+		generalLogsImpl.generalLogsEntry(generalLogsModel);
+	}
+	
+	public void reportToEventLog (String databaseName, String tableName, String columnName, int recordId, String oldValue, String newValue) {
+		EventLogsImpl eventLogsImpl = new EventLogsImpl();
+		EventLogsModel eventLogsModel = new EventLogsModel();
+		eventLogsModel.setDatabaseName(databaseName);
+		eventLogsModel.setTableName(tableName);
+		eventLogsModel.setColumnName(columnName);
+		eventLogsModel.setRecordID(recordId);
+		eventLogsModel.setOldValue(oldValue);
+		eventLogsModel.setNewValue(newValue);
+		eventLogsModel.setEventType(Event.UPDATE_OPERATION);
+		eventLogsImpl.eventLogsEntry(eventLogsModel);
 	}
 	
 	public List<String> getTableNames (String databaseName) {

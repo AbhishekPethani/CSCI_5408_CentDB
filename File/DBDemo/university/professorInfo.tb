@@ -1,2 +1,2 @@
-_id:Integer/professorId:Integer:primaryKey:not null:unique/name:String:not null/courseId:Integer:foreignKey:not null:unique/
+_id:Integer/courseId:Integer:foreignKey:not null:unique/name:String:not null/professorId:Integer:primaryKey:not null:unique/
 1/5408/zhaoling/B00871417/

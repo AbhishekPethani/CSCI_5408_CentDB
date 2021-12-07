@@ -1,2 +1,2 @@
-_id:Integer/studentId:Integer:primaryKey:not null:unique/name:String:not null/courseId:Integer:foreignKey:not null:unique/
-1/5308/Julie/B00999999/
+_id:Integer/courseId:Integer:foreignKey:not null:unique/name:String:not null/studentId:Integer:primaryKey:not null:unique/
+1/5408/Tom/B00111111/
