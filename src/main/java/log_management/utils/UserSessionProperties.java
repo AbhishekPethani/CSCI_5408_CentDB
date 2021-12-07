@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class UserSessionProperties {
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
     public static Properties getUserSessionProperties() {
         try {

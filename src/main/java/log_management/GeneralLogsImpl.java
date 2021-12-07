@@ -2,6 +2,7 @@ package log_management;
 
 import log_management.constant.Files;
 import log_management.model.GeneralLogsModel;
+import log_management.utils.UserSessionUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,6 +18,7 @@ public class GeneralLogsImpl implements GeneralLogs {
         }
         return generalLogsImplInstance;
     }
+
     /**
      * Captures execution time of SQL queries and records the changes in the database such as number of tables and
      * records at a given point of time.
@@ -24,10 +26,9 @@ public class GeneralLogsImpl implements GeneralLogs {
      * @param generalLogsModel Contains instance of GeneralLogsModel and has fields such as Log Entry Timestamp,
      *                         Username, Database Name, Message, Query Execution Time, Number of Tables, Number of
      *                         Records and Timestamp.
-     *
      * @implNote User of this method needs to create instance of GeneralLogsImpl class. Set Database Name, Message,
-     *           Query Execution Time (Type: long), Number of Tables (Type: long) and Number of Records (Type: long)
-     *           fields using respective setters and then pass the instance as a parameter to this method.
+     * Query Execution Time (Type: long), Number of Tables (Type: long) and Number of Records (Type: long)
+     * fields using respective setters and then pass the instance as a parameter to this method.
      */
     @Override
     public void generalLogsEntry(GeneralLogsModel generalLogsModel) {
@@ -36,9 +37,9 @@ public class GeneralLogsImpl implements GeneralLogs {
         try (BufferedWriter generalLogsWriter = new BufferedWriter(new FileWriter(logFilesDirectory.getCanonicalPath() + "\\" + Files.GENERAL_LOGS_FILE, true))) {
             generalLogsWriter.append("Log Timestamp: ").append(String.valueOf(generalLogsModel.getGeneralLogsEntryTimestamp()));
             generalLogsWriter.append(" |:| ");
-            generalLogsWriter.append("Username: ").append(generalLogsModel.getUsername());
+            generalLogsWriter.append("Username: ").append(UserSessionUtils.getUsername());
             generalLogsWriter.append(" |:| ");
-            generalLogsWriter.append("Database: ").append(generalLogsModel.getDatabaseName());
+            generalLogsWriter.append("Database: ").append(UserSessionUtils.getDatabaseName());
             generalLogsWriter.append(" |:| ");
             generalLogsWriter.append("Message: ").append(generalLogsModel.getMessage());
             generalLogsWriter.append(" |:| ");

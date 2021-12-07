@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 public class GeneralLogsModel {
-    String username;
-    String databaseName;
     String message;
     long queryExecutionTime;
     List<Map<String, Long>> tableList;
@@ -20,14 +18,6 @@ public class GeneralLogsModel {
             generalLogsModelInstance = new GeneralLogsModel();
         }
         return generalLogsModelInstance;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getMessage() {
@@ -52,14 +42,6 @@ public class GeneralLogsModel {
 
     public void setQueryExecutionTime(long queryExecutionTime) {
         this.queryExecutionTime = queryExecutionTime;
-    }
-
-    public String getDatabaseName() {
-        return databaseName;
-    }
-
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
     }
 
     public int getTableCount() {
