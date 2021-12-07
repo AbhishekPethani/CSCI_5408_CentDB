@@ -1,0 +1,2 @@
+_id:Integer/studentId:Integer:primaryKey:not null:unique/name:String:not null/courseId:Integer:foreignKey:not null/
+1/B00999999/Julie/5308/
