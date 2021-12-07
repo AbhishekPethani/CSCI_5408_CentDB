@@ -1,0 +1,3 @@
+_id:Integer/courseId:Integer:primaryKey:not null:unique/name:String:not null/
+1/5408/DMWA/
+2/5308/ADC/
