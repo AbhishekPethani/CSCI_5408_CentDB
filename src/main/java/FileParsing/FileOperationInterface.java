@@ -19,9 +19,11 @@ public interface FileOperationInterface {
 	
 	public String getHeaderString (String tableFileName);
 	
-	public void getDatabaseInfo (String databaseName, Long tableCount, Long recordCountTotal, List<Map<String, Long>> tables);
+	public void getDatabaseInfo (String databaseName, int tableCount, Long recordCountTotal, List<Map<String, Long>> tables);
 	
 	public void reportToLog (String databaseName);
+	
+	public void reportToEventLog (String databaseName, String tableName, String columnName, int recordId, String oldValue, String newValue);
 	
 	public List<String> getTableNames (String databaseName);
 	

@@ -51,18 +51,27 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 		try {
 			tableFile.createNewFile();
 			String header = "_id:Integer/";
+			TreeMap<String, String> columnNames = new TreeMap<String, String>();
 			for (Map<String, Object> columnInfo : columnInfos) {
-				header += (String)columnInfo.get("columnName");
-				header += ":" + (String)columnInfo.get("dataType");
-				if ((Boolean)columnInfo.get("primaryKey"))
-					header += ":primaryKey";
-				if ((Boolean)columnInfo.get("foreignKey"))
-					header += ":foreignKey";
-				if ((Boolean)columnInfo.get("not null"))
-					header += ":not null";
-				if ((Boolean)columnInfo.get("unique"))
-					header += ":unique";
-				header += "/";
+				columnNames.put((String)columnInfo.get("columnName"), "columnName");
+			}
+			for (String columnName : columnNames.keySet()) {
+				for (Map<String, Object> columnInfo : columnInfos) {
+					if (!columnName.equals((String)columnInfo.get("columnName")))
+						continue;
+					header += (String)columnInfo.get("columnName");
+					header += ":" + (String)columnInfo.get("dataType");
+					if ((Boolean)columnInfo.get("primaryKey"))
+						header += ":primaryKey";
+					if ((Boolean)columnInfo.get("foreignKey"))
+						header += ":foreignKey";
+					if ((Boolean)columnInfo.get("not null"))
+						header += ":not null";
+					if ((Boolean)columnInfo.get("unique"))
+						header += ":unique";
+					header += "/";
+					break;
+				}
 			}
 			BufferedWriter out = new BufferedWriter(new FileWriter(tableFile, true));
 			out.write(header + "\r\n");
@@ -119,6 +128,7 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			Boolean isFit = fileOperation.checkIsSatisfyCondition(conditionColumnAndValue, columnRow);
 			if (isFit) {
 				for (String update : updateColumnAndValue.keySet()) {
+					fileOperation.reportToEventLog(databaseName, tableName, update, Integer.valueOf(s), columnRow.get(update), updateColumnAndValue.get(update).toString());
 					columnRow.put(update, updateColumnAndValue.get(update).toString());
 				}
 				String newRow = "";
