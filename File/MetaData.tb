@@ -1,0 +1,17 @@
+{
+	database:university
+	table:{
+			studentInfo:{
+							_id:Integer
+							courseId:Integer|foreignKey|not null|unique
+							name:String|not null
+							studentId:Integer|primaryKey|not null|unique
+						}
+			professorInfo:{
+							_id:Integer
+							courseId:Integer|foreignKey|not null|unique
+							name:String|not null
+							professorId:Integer|primaryKey|not null|unique
+						}
+			}
+};
