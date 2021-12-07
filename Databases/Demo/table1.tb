@@ -1,2 +1,0 @@
-_id:Integer/student_id:String:pk:not null/age:Integer/name:String:not null/sex:String/
-1/24/Zhaoling Sun/female/B00871417/

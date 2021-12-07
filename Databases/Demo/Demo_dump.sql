@@ -1,32 +1,36 @@
 CREATE DATABASE Demo;
 
-DROP TABLE IF EXISTS `table1`;
-CREATE TABLE `table1` (
+DROP TABLE IF EXISTS `courseInfo`;
+CREATE TABLE `courseInfo` (
 	`_id` Integer,
- 	`student_id` String,
- 	`age` Integer,
- 	`name` String,
- 	`sex` String,
- 	PRIMARY KEY (student_id)
+ 	`courseId` Integer NOT NULL UNIQUE,
+ 	`name` String NOT NULL,
+ 	PRIMARY KEY (courseId)
 );
-INSERT INTO `table1` VALUES ('1','24','Zhaoling Sun','female','B00871417');
-DROP TABLE IF EXISTS `table2`;
-CREATE TABLE `table2` (
+
+INSERT INTO `courseInfo` VALUES ('1','5408','DMWA'), ('2','5308','ADC');
+
+DROP TABLE IF EXISTS `professorInfo`;
+CREATE TABLE `professorInfo` (
 	`_id` Integer,
- 	`course_id` int(10),
- 	`student_id` String,
- 	`course_name` varchar(100),
- 	PRIMARY KEY (course_id),
-	FOREIGN KEY (student_id) REFERENCES table3(student_id)
+ 	`professorId` Integer NOT NULL UNIQUE,
+ 	`name` String NOT NULL,
+ 	`courseId` Integer NOT NULL UNIQUE,
+ 	PRIMARY KEY (professorId),
+	FOREIGN KEY (courseId) REFERENCES courseInfo(courseId)
 );
-INSERT INTO `table2` VALUES ('1','csci_5100','1','CS'), ('2','csci_5408','1','DMWA'), ('3','csci_5408','3','DMWA');
-DROP TABLE IF EXISTS `table3`;
-CREATE TABLE `table3` (
+
+INSERT INTO `professorInfo` VALUES ('1','5408','zhaoling','B00871417');
+
+DROP TABLE IF EXISTS `studentInfo`;
+CREATE TABLE `studentInfo` (
 	`_id` Integer,
- 	`exam_id` int(10),
- 	`student_id` String,
- 	`course_id` int(10),
- 	PRIMARY KEY (exam_id),,
-	FOREIGN KEY (course_id) REFERENCES table3(course_id)
+ 	`studentId` Integer NOT NULL UNIQUE,
+ 	`name` String NOT NULL,
+ 	`courseId` Integer NOT NULL,
+ 	PRIMARY KEY (studentId),
+	FOREIGN KEY (courseId) REFERENCES courseInfo(courseId)
 );
-INSERT INTO `table3` VALUES ('1','e1','24','csci_5100'), ('2','e2','24','csci_5408'), ('3','e2','24','csci_5408');
+
+INSERT INTO `studentInfo` VALUES ('1','B00999999','Julie','5308');
+

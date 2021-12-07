@@ -48,23 +48,33 @@ public class GenerateSQLDump implements IGenerateSQLDump {
 			String foreignKey = "";
 			for(String column : columns) {
 				String splitData[] = column.split(":");
+				List<String> splitDataList = Arrays.asList(splitData); 
+				text += "\t`" + splitData[0] + "` " + splitData[1];
+				if(splitDataList.contains("not null")) {
+					text += " NOT NULL";
+				}
+				if(splitDataList.contains("unique")) {
+					text += " UNIQUE";
+				}
+				text += ",\n ";
+				
 				// add primary key
-				if(splitData.length > 2 && splitData[2].equals("pk")) {
+				if(splitDataList.contains("primaryKey")) {
 					primaryKey = "\tPRIMARY KEY (" + splitData[0] +")";
 				}
 				// add foreign key
-				if(splitData.length > 2 && splitData[2].equals("fk")) {
-					String tableReference = findTableReference(splitData[0], tableName, tables);
+				if(splitDataList.contains("foreignKey")) {
+					String tableReference = findTableReference(splitData[0], tables);
 					foreignKey = "\tFOREIGN KEY (" + splitData[0] +") REFERENCES " + tableReference + "(" + splitData[0] +")";
 					primaryKey += ",";
 				}
-				text += "\t`" + splitData[0] + "` " + splitData[1] + ",\n ";
+				
 			}
 			text += primaryKey + "\n";
 			if (foreignKey != "") {
 				text += foreignKey + "\n";
 			}
-			text += ");\n";
+			text += ");\n\n";
 			
 			text += insertValues(tableName, br);
 			
@@ -76,18 +86,21 @@ public class GenerateSQLDump implements IGenerateSQLDump {
 		}
 		return text;
 	}
-	
-	private static String findTableReference(String columnName, String tableName, File[] tables) {
+		
+	// method to find foreign key's table reference
+	private static String findTableReference(String columnName, File[] tables) {
 		String referenceTableName = "";
 		for(File table : tables) {
-			if(!(table.getName().contains("_ERD.txt") || table.getName().contains("_dump.sql") || table.getName().equals(tableName))) {
+			if(!(table.getName().contains("_ERD.txt") || table.getName().contains("_dump.sql"))) {
 				BufferedReader br;
 				try {
 					br = new BufferedReader(new FileReader(table));
-					String columnText = br.readLine();
-					if(columnText.contains(columnName)) {
-						String t = table.getName();
-						referenceTableName = t.substring(0, t.lastIndexOf('.'));
+					String columns[] = br.readLine().split("/");
+					for(String column : columns) {
+						if(column.contains(columnName) && column.contains("primaryKey")) {
+							referenceTableName = table.getName();
+							referenceTableName = referenceTableName.substring(0, referenceTableName.lastIndexOf('.'));
+						}
 					}
 					br.close();
 				} catch (FileNotFoundException e) {
@@ -99,6 +112,7 @@ public class GenerateSQLDump implements IGenerateSQLDump {
 		}
 		return referenceTableName;
 	}
+	
 
 	private static String insertValues(String tableName, BufferedReader br) throws IOException {
 		String insertQuery = "INSERT INTO `" + tableName + "` VALUES ";
@@ -120,7 +134,7 @@ public class GenerateSQLDump implements IGenerateSQLDump {
 				}
 			}
 		}
-		insertQuery += ";\n";
+		insertQuery += ";\n\n";
 		
 		return insertQuery;
 	}
