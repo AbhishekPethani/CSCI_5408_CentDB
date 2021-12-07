@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ParserTest {
-//        parser.parseQuery(System.currentTimeMillis(), "INSERT INTO table_name (c1,c2,c3) VALUES (abc,def,ghi), (jkl," +
-//                "mno,pqr);");
 
     @Test
     public void parseCreateDatabaseQueryTest() {

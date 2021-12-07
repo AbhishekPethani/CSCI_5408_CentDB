@@ -4,8 +4,6 @@ package QueryProcessor;
 
 import Exceptions.InvalidSQLQueryException;
 
-import javax.management.Query;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -2,24 +2,41 @@
 
 package QueryProcessor;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Validator {
-//    public Boolean validateQuery(HashMap<String, Object> queryContent) {
-//        Set<String> queryKeys = queryContent.keySet();
-//        for (String queryKey : queryKeys) {
-//            if ("queryType".equals(queryKey)) {
-//                if (queryContent.get(queryKey) == QueryType.SELECT)
-//                validateSelectQuery();
-//            } else if ("databaseName".equals(queryKey)) {
-//                // check if the database exists
-//            } else if ("tableName".equals(queryKey)) {
-//                // check if the table exists
-//            }
-//        }
-//        return false;
+
+    private Boolean doesDatabaseExist(String databaseName) {
+//        List<String> databases =  getDatabaseNames();
+        List<String> databases = new ArrayList<>();
+        databases.add("countries");
+        databases.add("places");
+        return databases.contains(databaseName);
+    }
+
+    private Boolean doesTableExist(String databaseName, String tableName) {
+//        List<String> tables =  getTableNames(databaseName);
+        List<String> tables = new ArrayList<>();
+        tables.add("countries");
+        tables.add("places");
+        return tables.contains(tableName);
+    }
+
+//    private Boolean doesColumnExist() {
+//
+//    }
+//
+//    private Boolean isNotNull(String tableName, String columnName) {
+//        ArrayList<String> columns = new ArrayList<String>() {{
+//            add(columnName);
+//        }};
+//        List<TreeMap<String, String>> columnData = selectFromTable(columns, tableName);
+//
+//    }
+//
+//    private Boolean isUnique(String tableName, String columnName) {
+//
 //    }
 
     Map<String, Object> validateInsertIntoQuery(Map<String, Object> parsedQueryData) {
