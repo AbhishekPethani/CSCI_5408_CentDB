@@ -75,6 +75,8 @@ public class UserInterface {
             SECURITY_ANSWER_INPUT = scanner.nextLine();
             if(SECURITY_ANSWER_INPUT.equals(SECURITY_ANSWER_CHECK)){
                 System.out.println("1.Write Queries\n2.Export\n3.Data Model\n4.Analytics");
+                int option = scanner.nextInt();
+                chooseOption(option);
             }
             else{
                 System.out.println("Wrong Answer");
@@ -85,9 +87,13 @@ public class UserInterface {
             System.out.println("Wrong Username or Password");
             login();
         }
+    }
 
+    public void chooseOption(int option){
 
     }
+
+
     public void registration() throws IOException, NoSuchAlgorithmException {
         FileWriter myWriter = new FileWriter("src/main/resources/UserProfile.txt",true);
         Scanner scanner = new Scanner(System.in);

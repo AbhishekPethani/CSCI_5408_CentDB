@@ -1,4 +1,5 @@
-package ExportData;
+import ExportData.GenerateSQLDump;
+import ExportData.IGenerateSQLDump;
 
 public class Main {
 
