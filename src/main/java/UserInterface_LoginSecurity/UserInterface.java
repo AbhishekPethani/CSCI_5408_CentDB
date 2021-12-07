@@ -10,6 +10,8 @@ import java.util.Scanner;
 
 public class UserInterface {
 
+    String userName="";
+
     public void welcomeScreen() throws NoSuchAlgorithmException, IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome!");
@@ -67,6 +69,7 @@ public class UserInterface {
             SECURITY_ANSWER_CHECK =  string.split(" :: ")[3];
         }
         if(USERNAME_INPUT.equals(USERNAME_CHECK ) && PASSWORD_INPUT.equals(PASSWORD_CHECK)){
+            userName = USERNAME_INPUT;
             System.out.println("Security Question:   " + SECURITY_QUESTION);
             System.out.println("Answer:  ");
             SECURITY_ANSWER_INPUT = scanner.nextLine();
