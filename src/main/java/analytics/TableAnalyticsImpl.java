@@ -25,7 +25,7 @@ public class TableAnalyticsImpl implements Analytics {
         String operationType = queryTokens.get(1).toUpperCase();
         System.out.println(databaseName);
         System.out.println(operationType);
-        List<String> tableList = new ArrayList<>() {{
+        List<String> tableList = new ArrayList<String>() {{
             add("class12");
             add("class11");
             add("staff");

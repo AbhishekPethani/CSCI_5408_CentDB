@@ -1,17 +1,13 @@
-import ExportData.GenerateSQLDump;
-import ExportData.IGenerateSQLDump;
+import UserInterface_LoginSecurity.UserInterface;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public class Main {
 
-	public static void main(String[] args) {
-		IGenerateSQLDump sqlDump = new GenerateSQLDump("Demo");
-		try {
-			sqlDump.generateSQLDump();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+	public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
+		UserInterface userInterface = new UserInterface();
+		userInterface.welcomeScreen();
 	}
 
 }
