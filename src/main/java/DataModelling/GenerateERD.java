@@ -152,7 +152,7 @@ public class GenerateERD implements IGenerateERD {
 	}
 	
 	// method to check if database exist
-	private static boolean databaseExist(String databaseName) {
+	public static boolean databaseExist(String databaseName) {
 		boolean databaseExist = false;
 		File database = new File("Databases/" + databaseName);
 		if(database.exists() && database.isDirectory()) {

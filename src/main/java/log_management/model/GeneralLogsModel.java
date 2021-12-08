@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 public class GeneralLogsModel {
-    String message;
-    long queryExecutionTime;
-    List<Map<String, Long>> tableList;
-    int tableCount;
-    long recordCount;
+    private String message;
+    private long queryExecutionTime;
+    private List<Map<String, Long>> tableList;
+    private int tableCount;
+    private long recordCount;
 
     private static GeneralLogsModel generalLogsModelInstance;
 
