@@ -158,7 +158,11 @@ public class FileOperation implements FileOperationInterface {
 		return headerString;
 	}
 	
-	public void getDatabaseInfo (String databaseName, int tableCount, Long recordCountTotal, List<Map<String, Long>> tables) {
+	public Map<String,Object> getDatabaseInfo (String databaseName) {
+		Map<String, Object> databaseInfo = new HashMap<String, Object>();
+		int tableCount;
+		Long recordCountTotal;
+		List<Map<String, Long>> tables = new ArrayList<Map<String, Long>>();
 		String dirName = path + databaseName;
 		File databaseDir = new File(dirName);
 		File[] listFiles = databaseDir.listFiles();
@@ -184,13 +188,19 @@ public class FileOperation implements FileOperationInterface {
 				e.printStackTrace();
 			}
         }
+        databaseInfo.put("tableCount", tableCount);
+        databaseInfo.put("recordCountTotal", recordCountTotal);
+        databaseInfo.put("tables", tables);
+        return databaseInfo;
 	}
 	
 	public void reportToLog (String databaseName, String message) {
-		int tableCount = 0;
-		Long recordCountTotal = 0L;
-		List<Map<String, Long>> tables = new ArrayList<Map<String, Long>>();
-		getDatabaseInfo(databaseName, tableCount, recordCountTotal, tables);
+		Map<String, Object> databaseInfo = new HashMap<String, Object>();
+		databaseInfo = getDatabaseInfo(databaseName);
+		
+		int tableCount = (Integer)databaseInfo.get("tableCount");
+		Long recordCountTotal = (Long)databaseInfo.get("recordCountTotal");
+		List<Map<String, Long>> tables = (List<Map<String, Long>>)databaseInfo.get("tables");
 		
 		GeneralLogsImpl generalLogsImpl = new GeneralLogsImpl();
 		GeneralLogsModel generalLogsModel = new GeneralLogsModel();
