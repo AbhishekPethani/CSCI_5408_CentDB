@@ -1,6 +1,7 @@
 package QueryProcessor;
 
 import Exceptions.InvalidSQLQueryException;
+import log_management.utils.UserSessionUtils;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -242,6 +243,19 @@ public class Parser {
         return parsedQueryData;
     }
 
+    Map<String, Object> parseTranasactionQueries(Matcher queryMatcher, QueryType type) {
+        Map<String, Object> parsedQueryData = new HashMap<>();
+
+        if (queryMatcher.group(2).contains("[.-@#$%^&*()<>?:\"';,/\\s]") || queryMatcher.group(2).isBlank()) {
+            throw new InvalidSQLQueryException("Incorrect transaction name passed in the TRANSACTION QUERY.");
+        } else {
+            parsedQueryData.put("transactionName", queryMatcher.group(2).trim());
+            parsedQueryData.put("queryType", type);
+        }
+
+        return parsedQueryData;
+    }
+
     public Map<String, Object> parseQuery(long queryId, String query) {
         Map<String, Object> parsedQueryData = new HashMap<>();
         int index = 0;
@@ -261,6 +275,7 @@ public class Parser {
                             break;
                         case USE_DATABASE:
                             parsedQueryData = this.parseUseDatabaseQuery(queryMatcher);
+                            UserSessionUtils.setDatabaseName((String) parsedQueryData.get("databaseName"));
                             break;
                         case INSERT_INTO:
                             parsedQueryData = this.parseInsertIntoQuery(queryMatcher);
@@ -281,11 +296,11 @@ public class Parser {
                             parsedQueryData = this.parseDeleteFromQuery(queryMatcher);
                             break;
                         case BEGIN_TRANSACTION:
-                            break;
                         case COMMIT:
+                        case ROLLBACK: {
+                            parsedQueryData = this.parseTranasactionQueries(queryMatcher, type);
                             break;
-                        case ROLLBACK:
-                            break;
+                        }
                         default:
                             throw new InvalidSQLQueryException("Invalid SQL Query Entered");
                     }

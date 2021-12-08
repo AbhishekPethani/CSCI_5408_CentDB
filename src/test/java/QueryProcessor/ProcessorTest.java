@@ -25,7 +25,7 @@ public class ProcessorTest {
     public void submitCreateTableQueryTest() {
         Processor processor = new Processor();
         System.out.println(processor.submitQuery("USE newDB;"));
-        System.out.println(processor.submitQuery("CREATE TABLE people2 (PersonID INT PRIMARY_KEY, LastName TEXT, " +
+        System.out.println(processor.submitQuery("CREATE TABLE people3 (PersonID INT PRIMARY_KEY, LastName TEXT, " +
                 "FirstName TEXT NOT_NULL);"));
     }
 

@@ -1,0 +1,1 @@
+Log Timestamp: 1638998402841 |:| Username: null |:| Database: newDB |:| Message: people3table created |:| Timestamp: 2021-12-08T21:20:02.841092100Z

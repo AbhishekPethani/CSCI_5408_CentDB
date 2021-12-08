@@ -3,6 +3,7 @@
 package QueryProcessor;
 
 import Exceptions.InvalidSQLQueryException;
+import Exceptions.InvalidTransactionRequestException;
 import FileParsing.FileOperation;
 import FileParsing.FileParsingForQuery;
 
@@ -13,6 +14,8 @@ public class Validator {
     FileOperation fileOperation;
     FileParsingForQuery fileParsingForQuery;
     String currentDatabase = null;
+    String currentTransactionName = null;
+    Boolean ongoingTransaction = false;
 
     Validator() {
         this.fileOperation = new FileOperation();
@@ -318,31 +321,57 @@ public class Validator {
         return validatedQueryData;
     }
 
+    Map<String, Object> validateTranasactionQueries(Map<String, Object> parsedQueryData) throws InvalidTransactionRequestException {
+        Map<String, Object> validatedQueryData = new HashMap<>();
 
-    public Map<String, Object> validateQuery(Map<String, Object> parsedQueryData) {
+        if (parsedQueryData.get("queryType").equals(QueryType.BEGIN_TRANSACTION)) {
+            if (this.ongoingTransaction != null) {
+                throw new InvalidTransactionRequestException("Invalid Transaction Command - Only one transaction can " +
+                        "be run at a time from a single client");
+            }
+            this.ongoingTransaction = true;
+            this.currentTransactionName = (String) parsedQueryData.get("transactionName");
+            // go to the transaction manager
+        } else if (parsedQueryData.get("queryType").equals(QueryType.COMMIT)) {
+
+        } else if (parsedQueryData.get("queryType").equals(QueryType.ROLLBACK)) {
+            if (this.ongoingTransaction == null) {
+                throw new InvalidTransactionRequestException("Invalid Transaction Command - No transaction is ongoing" +
+                        " on this client.");
+            }
+            this.ongoingTransaction = true;
+            this.currentTransactionName = (String) parsedQueryData.get("transactionName");
+        } else {
+            throw new InvalidTransactionRequestException("Invalid Transaction Command");
+        }
+
+        return validatedQueryData;
+    }
+
+    public Map<String, Object> validateQuery(Map<String, Object> parsedQueryData) throws InvalidTransactionRequestException {
         Map<String, Object> validatedQueryData = new HashMap<>();
         QueryType type = (QueryType) parsedQueryData.get("queryType");
         switch (type) {
             case CREATE_DATABASE:
-                validatedQueryData = this.validateCreateDatabaseQuery(parsedQueryData); //
+                validatedQueryData = this.validateCreateDatabaseQuery(parsedQueryData);
                 break;
             case DROP_DATABASE:
-                validatedQueryData = this.validateDropDatabaseQuery(parsedQueryData); //
+                validatedQueryData = this.validateDropDatabaseQuery(parsedQueryData);
                 break;
             case USE_DATABASE:
-                validatedQueryData = this.validateUseDatabaseQuery(parsedQueryData); //
+                validatedQueryData = this.validateUseDatabaseQuery(parsedQueryData);
                 break;
             case INSERT_INTO:
-                validatedQueryData = this.validateInsertIntoQuery(parsedQueryData); //
+                validatedQueryData = this.validateInsertIntoQuery(parsedQueryData);
                 break;
             case CREATE_TABLE:
-                validatedQueryData = this.validateCreateTableQuery(parsedQueryData); //
+                validatedQueryData = this.validateCreateTableQuery(parsedQueryData);
                 break;
             case DROP_TABLE:
-                validatedQueryData = this.validateDeleteTableQuery(parsedQueryData); //
+                validatedQueryData = this.validateDeleteTableQuery(parsedQueryData);
                 break;
             case SELECT_FROM:
-                validatedQueryData = this.validateSelectFromQuery(parsedQueryData); //
+                validatedQueryData = this.validateSelectFromQuery(parsedQueryData);
                 break;
             case UPDATE:
                 validatedQueryData = this.validateUpdateQuery(parsedQueryData);
@@ -351,11 +380,16 @@ public class Validator {
                 validatedQueryData = this.validateDeleteFromQuery(parsedQueryData);
                 break;
             case BEGIN_TRANSACTION:
-                break;
             case COMMIT:
+            case ROLLBACK: {
+                try {
+                    validatedQueryData = this.validateTranasactionQueries(parsedQueryData);
+                } catch (InvalidTransactionRequestException e) {
+                    e.printStackTrace();
+                    throw e;
+                }
                 break;
-            case ROLLBACK:
-                break;
+            }
             default:
                 throw new InvalidSQLQueryException("Invalid SQL Query Entered");
         }
