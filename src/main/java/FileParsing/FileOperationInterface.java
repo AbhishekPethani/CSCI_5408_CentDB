@@ -19,7 +19,7 @@ public interface FileOperationInterface {
 	
 	public String getHeaderString (String tableFileName);
 	
-	public void getDatabaseInfo (String databaseName, int tableCount, Long recordCountTotal, List<Map<String, Long>> tables);
+	public Map<String,Object> getDatabaseInfo (String databaseName);
 	
 	public void reportToLog (String databaseName, String message);
 	
