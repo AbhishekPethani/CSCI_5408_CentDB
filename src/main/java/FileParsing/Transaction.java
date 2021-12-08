@@ -17,6 +17,7 @@ import java.util.TreeMap;
  */
 public class Transaction implements TransactionInterface {
 
+	private final String path = "Databases/";
 	private FileOperation fileOperation = new FileOperation();
 	private Map<String, Map<MyThread, String>> transactions;
 	private Map<String, ArrayList<TreeMap<String, String>>> tables = new HashMap<String, ArrayList<TreeMap<String, String>>>();
@@ -191,7 +192,7 @@ public class Transaction implements TransactionInterface {
 	}
 	
 	private void readFileIntoMemory (String databaseName, String tableName) {
-		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+		String tableFileName = path + databaseName + "/" + tableName + ".tb";
 		TreeMap<String, String> header = fileOperation.getTableHeader(tableFileName);
 		this.headers.put(tableName, header);
 		TreeMap<String, String> contents = fileOperation.getTableContent(tableFileName);
@@ -206,7 +207,7 @@ public class Transaction implements TransactionInterface {
 	private void saveMemoryIntoFile () {
 		for (String tableName : tables.keySet()) {
 			ArrayList<TreeMap<String, String>> table = tables.get(tableName);
-			String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+			String tableFileName = path + databaseName + "/" + tableName + ".tb";
 			TreeMap<String, String> header = headers.get(tableName);
 			File tableFile = new File(tableFileName);
 			List<String> fileContent = new ArrayList<String>();

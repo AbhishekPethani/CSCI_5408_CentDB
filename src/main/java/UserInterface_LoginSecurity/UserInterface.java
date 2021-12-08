@@ -1,11 +1,20 @@
 package UserInterface_LoginSecurity;
 
+import DataModelling.GenerateERD;
+import DataModelling.IGenerateERD;
+import ExportData.GenerateSQLDump;
+import ExportData.IGenerateSQLDump;
+import analytics.DatabaseAnalyticsImpl;
+import analytics.TableAnalyticsImpl;
+import log_management.utils.UserSessionUtils;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -31,6 +40,7 @@ public class UserInterface {
     }
 
     public void login() throws NoSuchAlgorithmException, IOException {
+        UserSessionUtils userSessionUtils = new UserSessionUtils();
         Scanner scanner = new Scanner(System.in);
         MessageDigest messageDigest = MessageDigest.getInstance("MD5");
         String USERNAME_INPUT;
@@ -43,6 +53,7 @@ public class UserInterface {
         System.out.println("Welcome!");
         System.out.println("Enter username:   ");
         USERNAME_INPUT = scanner.nextLine();
+        userName = USERNAME_INPUT;
         System.out.println("Enter Password:   ");
         PASSWORD_INPUT = scanner.nextLine();
         messageDigest.update(USERNAME_INPUT.getBytes());
@@ -69,14 +80,12 @@ public class UserInterface {
             SECURITY_ANSWER_CHECK =  string.split(" :: ")[3];
         }
         if(USERNAME_INPUT.equals(USERNAME_CHECK ) && PASSWORD_INPUT.equals(PASSWORD_CHECK)){
-            userName = USERNAME_INPUT;
             System.out.println("Security Question:   " + SECURITY_QUESTION);
             System.out.println("Answer:  ");
             SECURITY_ANSWER_INPUT = scanner.nextLine();
             if(SECURITY_ANSWER_INPUT.equals(SECURITY_ANSWER_CHECK)){
-                System.out.println("1.Write Queries\n2.Export\n3.Data Model\n4.Analytics");
-                int option = scanner.nextInt();
-                chooseOption(option);
+                userSessionUtils.setUserSession(userName, Instant.now());
+                chooseOption();
             }
             else{
                 System.out.println("Wrong Answer");
@@ -89,8 +98,57 @@ public class UserInterface {
         }
     }
 
-    public void chooseOption(int option){
-
+    public void chooseOption(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n1.Write Queries\n2.Export\n3.Data Model\n4.Analytics");
+        int option = scanner.nextInt();
+        scanner.nextLine();
+        switch (option){
+            case 1:
+                break;
+            case 2:
+                String databaseName;
+                System.out.println("Enter database name");
+                databaseName = scanner.nextLine();
+                IGenerateSQLDump sqlDump = new GenerateSQLDump(databaseName);
+                try {
+                    sqlDump.generateSQLDump();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 3:
+                String databaseName2;
+                System.out.println("Enter database name");
+                databaseName2 = scanner.nextLine();
+                IGenerateERD erd = new GenerateERD(databaseName2);
+                try {
+                    erd.generateERD();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case 4:
+                System.out.println("1.Show analytics by Database");
+                System.out.println("2.Show analytics by Table and operation");
+                int subOption = scanner.nextInt();
+                scanner.nextLine();
+                switch (subOption){
+                    case 1:
+                        System.out.println("Enter query");
+                        String query = scanner.nextLine();
+                        DatabaseAnalyticsImpl databaseAnalytics = new DatabaseAnalyticsImpl();
+                        databaseAnalytics.getInstance().getAnalytics(query);
+                        break;
+                    case 2:
+                        System.out.println("Enter query");
+                        String query2 = scanner.nextLine();
+                        TableAnalyticsImpl tableAnalytics = new TableAnalyticsImpl();
+                        tableAnalytics.getInstance().getAnalytics(query2);
+                }
+                chooseOption();
+                break;
+        }
     }
 
 
@@ -125,7 +183,9 @@ public class UserInterface {
             stringBuilder2.append(String.format("%02x",b));
         }
         PASSWORD = stringBuilder2.toString();
-        myWriter.write(USERNAME + " :: " + PASSWORD + " :: " + SECURITY_QUESTION + " :: " + SECURITY_ANSWER );
+        myWriter.append(USERNAME + " :: " + PASSWORD + " :: " + SECURITY_QUESTION + " :: " + SECURITY_ANSWER + "\n");
         myWriter.close();
+        System.out.println("\nRegistration Successful! \n");
+        welcomeScreen();
     }
 }

@@ -35,6 +35,7 @@ import log_management.model.GeneralLogsModel;
  */
 public class FileOperation implements FileOperationInterface {
 
+	private final String path = "Databases/";
 	public TreeMap<String, String> getTableHeader (String tableFileName) {
 		File tableFile = new File(tableFileName);
 		TreeMap<String, String> tableColumnMap = new TreeMap<String, String>();
@@ -155,12 +156,14 @@ public class FileOperation implements FileOperationInterface {
 	}
 	
 	public void getDatabaseInfo (String databaseName, int tableCount, Long recordCountTotal, List<Map<String, Long>> tables) {
-		String dirName = "File/DBDemo/" + databaseName;
+		String dirName = path + databaseName;
 		File databaseDir = new File(dirName);
 		File[] listFiles = databaseDir.listFiles();
 		tableCount = 0;
 		recordCountTotal = 0L;
         for (File file : listFiles) {
+        	if (file.getName().substring(file.getName().length()-4).equals(".txt"))
+        		continue;
         	Map<String, Long> table = new HashMap<String, Long>();
             tableCount++;
             LineNumberReader lineNumberReader;
@@ -180,7 +183,7 @@ public class FileOperation implements FileOperationInterface {
         }
 	}
 	
-	public void reportToLog (String databaseName) {
+	public void reportToLog (String databaseName, String message) {
 		int tableCount = 0;
 		Long recordCountTotal = 0L;
 		List<Map<String, Long>> tables = new ArrayList<Map<String, Long>>();
@@ -188,15 +191,23 @@ public class FileOperation implements FileOperationInterface {
 		
 		GeneralLogsImpl generalLogsImpl = new GeneralLogsImpl();
 		GeneralLogsModel generalLogsModel = new GeneralLogsModel();
+		generalLogsModel.setMessage(message);
 		generalLogsModel.setTableCount(tableCount);
 		generalLogsModel.setRecordCount(recordCountTotal);
 		generalLogsModel.setTableList(tables);
 		generalLogsImpl.generalLogsEntry(generalLogsModel);
+		EventLogsImpl eventLogsImpl = new EventLogsImpl();
+		EventLogsModel eventLogsModel = new EventLogsModel();
+		eventLogsModel.setMessage(message);
+		eventLogsModel.setDatabaseName(databaseName);
+		eventLogsModel.setEventType(Event.DB_CHANGE);
+		eventLogsImpl.eventLogsEntry(eventLogsModel);
 	}
 	
 	public void reportToEventLog (String databaseName, String tableName, String columnName, int recordId, String oldValue, String newValue) {
 		EventLogsImpl eventLogsImpl = new EventLogsImpl();
 		EventLogsModel eventLogsModel = new EventLogsModel();
+		eventLogsModel.setMessage("data updated into " + tableName);
 		eventLogsModel.setDatabaseName(databaseName);
 		eventLogsModel.setTableName(tableName);
 		eventLogsModel.setColumnName(columnName);
@@ -209,10 +220,12 @@ public class FileOperation implements FileOperationInterface {
 	
 	public List<String> getTableNames (String databaseName) {
 		List<String> tableNames = new ArrayList<String>();
-		String dirName = "File/DBDemo/" + databaseName;
+		String dirName = path + databaseName;
 		File databaseDir = new File(dirName);
 		File[] listFiles = databaseDir.listFiles();
         for (File file : listFiles) {
+        	if (file.getName().substring(file.getName().length()-4).equals(".txt"))
+        		continue;
 			tableNames.add(file.getName().substring(0, file.getName().length()-3));
         }
 		return tableNames;
@@ -220,7 +233,7 @@ public class FileOperation implements FileOperationInterface {
 	
 	public List<String> getDatabaseNames () {
 		List<String> databaseNames = new ArrayList<String>();
-		String dirName = "File/DBDemo/";
+		String dirName = path;
 		File databaseDir = new File(dirName);
 		File[] listFiles = databaseDir.listFiles();
         for (File file : listFiles) {
@@ -232,17 +245,17 @@ public class FileOperation implements FileOperationInterface {
 	
 	public List<Map<String, Object>> getColumnInfo(String tableName) {
 		List<Map<String, Object>> columnInfos = new ArrayList<Map<String, Object>>();
-		String dir = "File/DBDemo/";
+		String dir = path;
 		File Dir = new File(dir);
         for (File file : Dir.listFiles()) {
         	if(!file.isDirectory())
         		continue;
         	String databaseName = file.getName();
-        	File databaseDir = new File("File/DBDemo/"+databaseName);
+        	File databaseDir = new File(path + databaseName);
         	for (File table : databaseDir.listFiles()) {
         		if (!table.getName().equals(tableName + ".tb"))
         			continue;
-        		TreeMap<String, String> columns = getTableHeader("File/DBDemo/"+databaseName + "/" + table.getName());
+        		TreeMap<String, String> columns = getTableHeader(path + databaseName + "/" + table.getName());
         		for (String columnName : columns.keySet()) {
         			List<String> constrain = new ArrayList<String>();
         			constrain = new ArrayList<String>(Arrays.asList(columns.get(columnName).split(":")));
@@ -268,7 +281,7 @@ public class FileOperation implements FileOperationInterface {
 	}
 	
 	public void createMetaData () {
-		String dir = "File/DBDemo/";
+		String dir = path;
 		File Dir = new File(dir);
 		File[] listFiles = Dir.listFiles();
     	List<String> MetaDatas = new ArrayList<String>();
@@ -280,11 +293,13 @@ public class FileOperation implements FileOperationInterface {
         	databaseName = file.getName();
         	MetaDatas.add("\tdatabase:" + databaseName);
         	MetaDatas.add("\ttable:{");
-        	File databaseDir = new File("File/DBDemo/"+databaseName);
+        	File databaseDir = new File(path + databaseName);
         	for (File table : databaseDir.listFiles()) {
+            	if (table.getName().substring(table.getName().length()-4).equals(".txt"))
+            		continue;
         		String tableName = table.getName().substring(0, table.getName().length()-3);
         		MetaDatas.add("\t\t\t" + tableName + ":{");
-        		TreeMap<String, String> columns = getTableHeader("File/DBDemo/"+databaseName + "/" + table.getName());
+        		TreeMap<String, String> columns = getTableHeader(path + databaseName + "/" + table.getName());
         		//System.out.println(columns);
         		for (String column : columns.keySet()) {
         			String columnInfo = "";
