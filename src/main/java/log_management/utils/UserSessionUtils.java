@@ -31,7 +31,7 @@ public class UserSessionUtils {
         return databaseName;
     }
 
-    public void setUserSession(String username, Instant loginTimestamp) {
+    public static void setUserSession(String username, Instant loginTimestamp) {
         Properties properties = UserSessionProperties.getUserSessionProperties();
         try {
             File resourcesDirectory = new File(Directory.RESOURCES_DIRECTORY);
