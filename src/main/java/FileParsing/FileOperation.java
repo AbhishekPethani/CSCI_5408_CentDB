@@ -36,6 +36,7 @@ import log_management.model.GeneralLogsModel;
 public class FileOperation implements FileOperationInterface {
 
 	private final String path = "Databases/";
+	
 	public TreeMap<String, String> getTableHeader (String tableFileName) {
 		File tableFile = new File(tableFileName);
 		TreeMap<String, String> tableColumnMap = new TreeMap<String, String>();
@@ -78,8 +79,10 @@ public class FileOperation implements FileOperationInterface {
 		int i = 0;
 		columnRow.put("_id",rowValue[0]);
 		for (String column : header.keySet()) {
-			if (column.equals("_id"))
+			if (column.equals("_id")) {
+				i++;
 				continue;
+			}
 			columnRow.put(column, rowValue[i]);
 			i++;
 		}
@@ -300,7 +303,6 @@ public class FileOperation implements FileOperationInterface {
         		String tableName = table.getName().substring(0, table.getName().length()-3);
         		MetaDatas.add("\t\t\t" + tableName + ":{");
         		TreeMap<String, String> columns = getTableHeader(path + databaseName + "/" + table.getName());
-        		//System.out.println(columns);
         		for (String column : columns.keySet()) {
         			String columnInfo = "";
         			columnInfo += "\t\t\t\t\t\t\t" + column + ":" + columns.get(column).replaceAll(":", "|");

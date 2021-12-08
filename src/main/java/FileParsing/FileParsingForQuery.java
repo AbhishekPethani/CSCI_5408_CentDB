@@ -80,14 +80,14 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			out.write(header + "\r\n");
 			out.flush();
 			out.close();
-			String message = tableName + "table created";
-			fileOperation.reportToLog(databaseName, message);
-			fileOperation.createMetaData();
-			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
+		//fileOperation.createMetaData();
+		String message = tableName + "table created";
+		fileOperation.reportToLog(databaseName, message);
+		return true;
 	}
 	
 	public Boolean insertIntoTable (TreeMap<String, Object> insertColumnAndValue, String tableName) {
