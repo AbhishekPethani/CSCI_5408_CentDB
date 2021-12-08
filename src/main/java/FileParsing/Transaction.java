@@ -86,16 +86,26 @@ public class Transaction implements TransactionInterface {
 		return 1;
 	}
 	
-	public int lockTransaction (String transactionName) {
+	public int acquireLockTransaction (String transactionName) {
 		for (String name : transactions.keySet()) {
 			MyThread thread = transactions.get(name).keySet().iterator().next();
 			if (name.equals(transactionName)) {
 				transactions.get(transactionName).put(thread, "lock");
-			} else {
-				transactions.get(transactionName).put(thread, "wait");
+				return 1;
 			}
 		}
-		return 1;
+		return 0;
+	}
+
+	public int blockTransaction(String transactionName) {
+		for (String name : transactions.keySet()) {
+			MyThread thread = transactions.get(name).keySet().iterator().next();
+			if (name.equals(transactionName)) {
+				transactions.get(transactionName).put(thread, "wait");
+				return 1;
+			}
+		}
+		return 0;
 	}
 	
 	public void setDatabase (String databaseName) {

@@ -95,12 +95,12 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			lineNumberReader.skip(Long.MAX_VALUE);
 			int id = lineNumberReader.getLineNumber();
 			lineNumberReader.close();
-			String insertLine = "";
+			String insertLine = String.valueOf(id) + "/";
 			for (String s : tableColumnMap.keySet()) {
 				if (insertColumnAndValue.containsKey(s))
 					insertLine += insertColumnAndValue.get(s).toString() + "/";
 				else if (s.equals("_id"))
-					insertLine += String.valueOf(id) + "/";
+					insertLine += "";
 				else
 					insertLine += "NULL/";
 			}

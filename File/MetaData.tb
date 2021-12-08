@@ -1,17 +1,28 @@
 {
+	database:newDB
+	table:{
+			people2:{
+							FirstName:TEXT|not null
+							LastName:TEXT
+							PersonID:INT|primaryKey
+							_id:Integer
+						}
+			}
+};
+{
 	database:university
 	table:{
-			studentInfo:{
-							_id:Integer
-							courseId:Integer|foreignKey|not null|unique
-							name:String|not null
-							studentId:Integer|primaryKey|not null|unique
-						}
 			professorInfo:{
 							_id:Integer
 							courseId:Integer|foreignKey|not null|unique
 							name:String|not null
 							professorId:Integer|primaryKey|not null|unique
+						}
+			studentInfo:{
+							_id:Integer
+							courseId:Integer|foreignKey|not null|unique
+							name:String|not null
+							studentId:Integer|primaryKey|not null|unique
 						}
 			}
 };
