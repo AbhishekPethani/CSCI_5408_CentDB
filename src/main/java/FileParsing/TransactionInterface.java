@@ -14,7 +14,9 @@ public interface TransactionInterface {
 	
 	public int commitTransaction (String transactionName);
 	
-	public int lockTransaction (String transactionName);
+	public int acquireLockTransaction (String transactionName);
+
+	public int blockTransaction (String transactionName);
 	
 	public void setDatabase (String databaseName);
 	

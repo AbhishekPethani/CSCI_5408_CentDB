@@ -17,6 +17,7 @@ import java.util.TreeMap;
  */
 public class Transaction implements TransactionInterface {
 
+	private final String path = "Databases/";
 	private FileOperation fileOperation = new FileOperation();
 	private Map<String, Map<MyThread, String>> transactions;
 	private Map<String, ArrayList<TreeMap<String, String>>> tables = new HashMap<String, ArrayList<TreeMap<String, String>>>();
@@ -86,16 +87,26 @@ public class Transaction implements TransactionInterface {
 		return 1;
 	}
 	
-	public int lockTransaction (String transactionName) {
+	public int acquireLockTransaction (String transactionName) {
 		for (String name : transactions.keySet()) {
 			MyThread thread = transactions.get(name).keySet().iterator().next();
 			if (name.equals(transactionName)) {
 				transactions.get(transactionName).put(thread, "lock");
-			} else {
-				transactions.get(transactionName).put(thread, "wait");
+				return 1;
 			}
 		}
-		return 1;
+		return 0;
+	}
+
+	public int blockTransaction(String transactionName) {
+		for (String name : transactions.keySet()) {
+			MyThread thread = transactions.get(name).keySet().iterator().next();
+			if (name.equals(transactionName)) {
+				transactions.get(transactionName).put(thread, "wait");
+				return 1;
+			}
+		}
+		return 0;
 	}
 	
 	public void setDatabase (String databaseName) {
@@ -181,7 +192,7 @@ public class Transaction implements TransactionInterface {
 	}
 	
 	private void readFileIntoMemory (String databaseName, String tableName) {
-		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+		String tableFileName = path + databaseName + "/" + tableName + ".tb";
 		TreeMap<String, String> header = fileOperation.getTableHeader(tableFileName);
 		this.headers.put(tableName, header);
 		TreeMap<String, String> contents = fileOperation.getTableContent(tableFileName);
@@ -196,7 +207,7 @@ public class Transaction implements TransactionInterface {
 	private void saveMemoryIntoFile () {
 		for (String tableName : tables.keySet()) {
 			ArrayList<TreeMap<String, String>> table = tables.get(tableName);
-			String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+			String tableFileName = path + databaseName + "/" + tableName + ".tb";
 			TreeMap<String, String> header = headers.get(tableName);
 			File tableFile = new File(tableFileName);
 			List<String> fileContent = new ArrayList<String>();

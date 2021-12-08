@@ -183,7 +183,7 @@ public class UserInterface {
             stringBuilder2.append(String.format("%02x",b));
         }
         PASSWORD = stringBuilder2.toString();
-        myWriter.write(USERNAME + " :: " + PASSWORD + " :: " + SECURITY_QUESTION + " :: " + SECURITY_ANSWER );
+        myWriter.append(USERNAME + " :: " + PASSWORD + " :: " + SECURITY_QUESTION + " :: " + SECURITY_ANSWER + "\n");
         myWriter.close();
         System.out.println("\nRegistration Successful! \n");
         welcomeScreen();
