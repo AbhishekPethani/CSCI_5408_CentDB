@@ -2,8 +2,11 @@ package UserInterface_LoginSecurity;
 
 import DataModelling.GenerateERD;
 import DataModelling.IGenerateERD;
+import Exceptions.InvalidSQLQueryException;
+import Exceptions.InvalidTransactionRequestException;
 import ExportData.GenerateSQLDump;
 import ExportData.IGenerateSQLDump;
+import QueryProcessor.Processor;
 import analytics.DatabaseAnalyticsImpl;
 import analytics.TableAnalyticsImpl;
 import log_management.utils.UserSessionUtils;
@@ -15,13 +18,18 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class UserInterface {
 
     String userName="";
+    Processor processor = null;
 
     public void welcomeScreen() throws NoSuchAlgorithmException, IOException {
+        this.processor = new Processor();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome!");
         System.out.println("1. Login\n2.Register");
@@ -105,6 +113,33 @@ public class UserInterface {
         scanner.nextLine();
         switch (option){
             case 1:
+                System.out.println("Enter your query");
+                String query = scanner.nextLine();
+                try {
+                    Map<String, Object> result = this.processor.submitQuery(query);
+                    if ((Boolean) result.get("executed")) {
+                        if ((String) result.get("queryType") == "SELECT_FROM") {
+                            List<TreeMap<String, String>> rows = (List<TreeMap<String, String>>) result.get(
+                                    "rows");
+                            System.out.println("--------------------------- ROWS ---------------------------");
+                            for (TreeMap<String, String> row : rows) {
+                                System.out.println(row);
+                            }
+                        } else if ((String) result.get("queryType") == "INSERT_INTO") { // || (String) result.get(
+                            // "queryType") == "UPDATE"
+                            System.out.println("Query executed successfully");
+                            System.out.println("Number of rows inserted: " + (String) result.get("successCount"));
+                            System.out.println("Number of rows not inserted: " + (String) result.get("failureCount"));
+                        } else {
+                            System.out.println("Query executed successfully");
+                        }
+                    }
+                } catch (InvalidSQLQueryException error) {
+                    System.out.println(error.getMessage());
+                } catch (Exception error) {
+                    System.out.println(error.getMessage());
+                }
+                chooseOption();
                 break;
             case 2:
                 String databaseName;
@@ -136,7 +171,7 @@ public class UserInterface {
                 switch (subOption){
                     case 1:
                         System.out.println("Enter query");
-                        String query = scanner.nextLine();
+                        query = scanner.nextLine();
                         DatabaseAnalyticsImpl databaseAnalytics = new DatabaseAnalyticsImpl();
                         databaseAnalytics.getInstance().getAnalytics(query);
                         break;

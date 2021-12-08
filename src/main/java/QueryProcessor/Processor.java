@@ -18,7 +18,7 @@ public class Processor {
     Validator validator;
     QueryLogsImpl queryLogs;
 
-    Processor() {
+    public Processor() {
         this.parser = new Parser();
         this.validator = new Validator();
         this.queryLogs = QueryLogsImpl.getQueryLogsInstance();

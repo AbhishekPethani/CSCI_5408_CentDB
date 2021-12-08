@@ -274,34 +274,36 @@ public class Validator {
         }
         TreeMap<String, List<Object>> conditionColumnAndValue = new TreeMap<String, List<Object>>();
         List<Object> condition = new ArrayList<Object>();
-        Map<String, Object> whereClause = (Map<String, Object>) parsedQueryData.get("whereClause");
-        switch ((Operators) whereClause.get("operator")) {
-            case EQUAL:
+        List<TreeMap<String, String>> rows = new ArrayList<>();
+        if (parsedQueryData.containsKey("whereClause")) {
+            Map<String, Object> whereClause = (Map<String, Object>) parsedQueryData.get("whereClause");
+            switch ((Operators) whereClause.get("operator")) {
+                case EQUAL:
                 case GREATER_THAN:
-            case LESS_THAN: {
-                condition.add(((Operators) whereClause.get("operator")).operator);
-                condition.add(((String) whereClause.get("valueOperand")).replace("'", ""));
-                break;
+                case LESS_THAN: {
+                    condition.add(((Operators) whereClause.get("operator")).operator);
+                    condition.add(((String) whereClause.get("valueOperand")).replace("'", ""));
+                    break;
+                }
+                case BETWEEN:
+                    break;
+                case NOT_EQUAL:
+                    break;
+                case LESS_THAN_EQUAL_TO:
+                    break;
+                case GREATER_THAN_EQUAL_TO:
+                    break;
+                case ASTERISK:
+                case IN:
+                case LIKE:
+                case NULL:
+                    break;
             }
-            case BETWEEN:
-                break;
-            case NOT_EQUAL:
-                break;
-            case LESS_THAN_EQUAL_TO:
-                break;
-            case GREATER_THAN_EQUAL_TO:
-                break;
-            case ASTERISK:
-            case IN:
-            case LIKE:
-            case NULL:
-                break;
+            conditionColumnAndValue.put(((String) whereClause.get("columnOperand")), condition);
         }
-        conditionColumnAndValue.put(((String) whereClause.get("columnOperand")), condition);
-        List<TreeMap<String, String>> rows =
-                this.fileParsingForQuery.selectFromTable((ArrayList<String>) parsedQueryData.get(
-                "columns"), (String) parsedQueryData.get("tableName"),
-                conditionColumnAndValue);
+        rows = this.fileParsingForQuery.selectFromTable((ArrayList<String>) parsedQueryData.get(
+                                "columns"), (String) parsedQueryData.get("tableName"),
+                        conditionColumnAndValue);
         validatedQueryData.put("executed", true);
         validatedQueryData.put("queryType", parsedQueryData.get("queryType").toString());
         validatedQueryData.put("rows", rows);

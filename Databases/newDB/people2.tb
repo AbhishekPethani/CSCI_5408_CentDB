@@ -1,1 +1,4 @@
 _id:Integer/FirstName:TEXT:not null/LastName:TEXT/PersonID:INT:primaryKey/
+1/first1/last1/101/
+2/first2/last2/102/
+3/first3/last3/103/

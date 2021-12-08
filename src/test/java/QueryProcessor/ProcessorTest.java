@@ -39,11 +39,8 @@ public class ProcessorTest {
     @Test
     public void submitSelectTableQueryTest() {
         Processor processor = new Processor();
-        System.out.println(processor.submitQuery("USE university;"));
-        System.out.println(processor.submitQuery("SELECT age, " +
-                "name" +
-                " FROM studentInfo\n" +
-                "WHERE courseId = 5408;"));
+        System.out.println(processor.submitQuery("USE newDB;"));
+        System.out.println(processor.submitQuery("SELECT FirstName, LastName, PersonID FROM people2;"));
     }
 
     @Test

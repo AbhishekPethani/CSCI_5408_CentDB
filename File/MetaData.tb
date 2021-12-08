@@ -37,3 +37,8 @@
 						}
 			}
 };
+{
+	database:testDB
+	table:{
+			}
+};
