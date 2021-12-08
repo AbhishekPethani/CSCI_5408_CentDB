@@ -21,7 +21,7 @@ public interface FileOperationInterface {
 	
 	public void getDatabaseInfo (String databaseName, int tableCount, Long recordCountTotal, List<Map<String, Long>> tables);
 	
-	public void reportToLog (String databaseName);
+	public void reportToLog (String databaseName, String message);
 	
 	public void reportToEventLog (String databaseName, String tableName, String columnName, int recordId, String oldValue, String newValue);
 	
