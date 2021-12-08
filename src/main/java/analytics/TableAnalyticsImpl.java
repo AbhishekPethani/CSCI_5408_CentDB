@@ -28,6 +28,17 @@ public class TableAnalyticsImpl implements Analytics {
     public void getAnalytics(String query) {
         List<String> queryTokens = new ArrayList<>(Arrays.asList(query.split(" ")));
         String databaseName = queryTokens.get(2);
+<<<<<<< HEAD
+        String operationType = queryTokens.get(1).toUpperCase();
+        System.out.println(databaseName);
+        System.out.println(operationType);
+        List<String> tableList = new ArrayList<String>() {{
+            add("class12");
+            add("class11");
+            add("staff");
+            add("tutors");
+            add("monitors");
+=======
         ArrayList keywordList = new ArrayList() {{
             add("CREATE");
             add("UPDATE");
@@ -36,6 +47,7 @@ public class TableAnalyticsImpl implements Analytics {
             add("DROP");
             add("USE");
             add("ALTER");
+>>>>>>> dd61f904a9d9dc4c4e377bad2687514ee9f8266a
         }};
         String operationType = queryTokens.get(1).toUpperCase();
         if (GenerateERD.databaseExist(databaseName) && keywordList.contains(operationType)) {
