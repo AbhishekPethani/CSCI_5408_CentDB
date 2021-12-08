@@ -1,5 +1,3 @@
-// Author: Devarshi Vyas (B00878443)
-
 package QueryProcessor;
 
 import Exceptions.InvalidSQLQueryException;
@@ -7,6 +5,10 @@ import Exceptions.InvalidSQLQueryException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+/**
+ * @author: Devarshi Vyas (b00878443)
+ */
 
 public class Parser {
 
@@ -119,7 +121,7 @@ public class Parser {
             throw new InvalidSQLQueryException("Incorrect table name passed in the DELETE TABLE QUERY.");
         } else {
             parsedQueryData.put("tableName", queryMatcher.group(2).trim());
-            parsedQueryData.put("queryType", QueryType.DELETE_TABLE);
+            parsedQueryData.put("queryType", QueryType.DROP_TABLE);
         }
         return parsedQueryData;
     }
@@ -135,6 +137,7 @@ public class Parser {
         }
 
         String[] columns = queryMatcher.group(3).replace(" ", "").split(",");
+        parsedQueryData.put("columns", columns);
         Pattern rawRowsPattern = Pattern.compile("\\((.*?)\\)");
         Matcher rawRowsMatcher = rawRowsPattern.matcher(queryMatcher.group(5).replace(" ",""));
         ArrayList<String> rawRows = new ArrayList<>();
@@ -265,7 +268,7 @@ public class Parser {
                         case CREATE_TABLE:
                             parsedQueryData = this.parseCreateTableQuery(queryMatcher);
                             break;
-                        case DELETE_TABLE:
+                        case DROP_TABLE:
                             parsedQueryData = this.parseDeleteTableQuery(queryMatcher);
                             break;
                         case SELECT_FROM:
@@ -296,6 +299,9 @@ public class Parser {
                 }
             }
             index++;
+        }
+        if (index == QueryType.values().length && parsedQueryData.size() == 0) {
+            throw new InvalidSQLQueryException("Invalid SQL Query Entered");
         }
         return parsedQueryData;
     }

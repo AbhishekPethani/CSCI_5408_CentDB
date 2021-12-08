@@ -25,7 +25,7 @@ public class Processor {
 
         try {
             Map<String, Object> parsedQueryData = this.parser.parseQuery(queryId, query);
-            this.validator.validateQuery(parsedQueryData);
+            result = this.validator.validateQuery(parsedQueryData);
         } catch (InvalidSQLQueryException error) {
             throw error;
         }
@@ -35,19 +35,18 @@ public class Processor {
 }
 
 enum QueryType {
-    CREATE_DATABASE("(CREATE DATABASE)\\s+(.*?)\\s+(;)"),
-    USE_DATABASE("USE\\s+(.*?);"),
-    DROP_DATABASE("(DROP DATABASE)\\s+(.*?)\\s+(;)"),
-    CREATE_TABLE("(CREATE TABLE)\\s+(.*?)\\s+\\((.*?)\\)\\s+(;)"),
-    DELETE_TABLE("(DELETE TABLE)\\s+(.*?)\\s+(;)"),
-    INSERT_INTO("(INSERT INTO)\\s+(\\S+)*\\s+\\((.*?)\\)\\s+(VALUES)\\s+(\\(.*?\\),{0,1})*?(;)"),
-    SELECT_FROM("(SELECT)\\s+(.*?)\\s+(FROM)\\s+(.*?)(\\s+(WHERE)\\s+(.*?))?(;)"),
-    UPDATE("(UPDATE)\\s+(.*?)\\s+(SET)\\s+(.*?)(\\s+(WHERE)\\s+(.*?))?(;)"),
-    DELETE_FROM("(DELETE\\s+FROM)\\s+(.*?)(\\s+WHERE\\s+(.*?))?(;)"),
-    BEGIN_TRANSACTION("(BEGIN\\s+TRANSACTION\\s+)(.*?)(;)"),
-    COMMIT("(COMMIT\\s+TRANSACTION\\s+)(.*?)(;)"),
-    ROLLBACK("(ROLLBACK\\s+TRANSACTION\\s+)(.*?)(;)");
-    // TODO: add analytics queries
+    CREATE_DATABASE("(CREATE\\s+DATABASE)\\s+(.*?)\\s*;"),
+    USE_DATABASE("USE\\s+(.*?)\\s*;"),
+    DROP_DATABASE("(DROP\\s+DATABASE)\\s+(.*)\\s*;"),
+    CREATE_TABLE("(CREATE\\s+TABLE)\\s+(.*?)\\s+\\((.*?)\\)\\s*;"),
+    DROP_TABLE("(DROP\\s+TABLE)\\s+(.*?)\\s*;"),
+    INSERT_INTO("(INSERT INTO)\\s+(\\S+)*\\s+\\((.*?)\\)\\s+(VALUES)\\s+(\\(.*?\\),{0,1})*?\\s*;"),
+    SELECT_FROM("(SELECT)\\s+(.*?)\\s+(FROM)\\s+(.*?)(\\s+(WHERE)\\s+(.*?))?\\s*;"),
+    UPDATE("(UPDATE)\\s+(.*?)\\s+(SET)\\s+(.*?)(\\s+(WHERE)\\s+(.*?))?\\s*;"),
+    DELETE_FROM("(DELETE\\s+FROM)\\s+(.*?)(\\s+WHERE\\s+(.*?))?\\s*;"),
+    BEGIN_TRANSACTION("(BEGIN\\s+TRANSACTION\\s+)(.*?)\\s*;"),
+    COMMIT("(COMMIT\\s+TRANSACTION\\s+)(.*?)\\s*;"),
+    ROLLBACK("(ROLLBACK\\s+TRANSACTION\\s+)(.*?)\\s*;");
 
     public String regex;
 

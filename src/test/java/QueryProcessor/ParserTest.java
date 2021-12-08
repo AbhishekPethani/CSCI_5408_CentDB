@@ -41,7 +41,7 @@ public class ParserTest {
                 "sometable;");
         Map<String, Object> expectedData = new HashMap<>();
         expectedData.put("tableName", "sometable");
-        expectedData.put("queryType", QueryType.DELETE_TABLE);
+        expectedData.put("queryType", QueryType.DROP_TABLE);
         assertEquals("Parsing - DELETE TABLE Query Failing", parsedQueryData, expectedData);
     }
 
