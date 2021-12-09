@@ -3,7 +3,6 @@ package UserInterface_LoginSecurity;
 import DataModelling.GenerateERD;
 import DataModelling.IGenerateERD;
 import Exceptions.InvalidSQLQueryException;
-import Exceptions.InvalidTransactionRequestException;
 import ExportData.GenerateSQLDump;
 import ExportData.IGenerateSQLDump;
 import QueryProcessor.Processor;
@@ -22,6 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+
+/**
+ * @author Rajath Bharadwaj
+ */
 
 public class UserInterface {
 
@@ -118,18 +121,17 @@ public class UserInterface {
                 try {
                     Map<String, Object> result = this.processor.submitQuery(query);
                     if ((Boolean) result.get("executed")) {
-                        if ((String) result.get("queryType") == "SELECT_FROM") {
+                        if (result.get("queryType") == "SELECT_FROM") {
                             List<TreeMap<String, String>> rows = (List<TreeMap<String, String>>) result.get(
                                     "rows");
                             System.out.println("--------------------------- ROWS ---------------------------");
                             for (TreeMap<String, String> row : rows) {
                                 System.out.println(row);
                             }
-                        } else if ((String) result.get("queryType") == "INSERT_INTO") { // || (String) result.get(
-                            // "queryType") == "UPDATE"
+                        } else if (result.get("queryType") == "INSERT_INTO") {
                             System.out.println("Query executed successfully");
-                            System.out.println("Number of rows inserted: " + (String) result.get("successCount"));
-                            System.out.println("Number of rows not inserted: " + (String) result.get("failureCount"));
+                            System.out.println("Number of rows inserted: " + result.get("successCount"));
+                            System.out.println("Number of rows not inserted: " + result.get("failureCount"));
                         } else {
                             System.out.println("Query executed successfully");
                         }
