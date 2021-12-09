@@ -1,0 +1,2 @@
+_id:Integer/courseId:Integer:foreignKey:not null:unique/name:String:not null/professorId:Integer:primaryKey:not null:unique/
+1/5308/Zhaoling Sun/B00871417/

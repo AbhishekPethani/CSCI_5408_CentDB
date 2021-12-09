@@ -1,0 +1,1 @@
+_id:Integer/aId:INT:foreignKey/name:TEXT:not null/sId:INT:primaryKey/

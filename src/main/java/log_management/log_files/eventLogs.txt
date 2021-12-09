@@ -1,0 +1,1 @@
+Log Timestamp: 1639022262910 |:| Username: dee |:| Database: CSCI5408 |:| Message: studentstable created |:| Timestamp: 2021-12-09T03:57:42.911966300Z

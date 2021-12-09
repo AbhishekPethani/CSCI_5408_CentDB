@@ -26,6 +26,7 @@ import java.util.TreeMap;
 
 public class FileParsingForQuery implements FileParsingForQueryInterface {
 	
+	private final String path = "Databases/";
 	private String databaseName;
 	private FileOperation fileOperation = new FileOperation();
 	
@@ -34,51 +35,63 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 	}
 	
 	public Boolean createDatabase (String databaseName) {
-		File file = new File("File/DBDemo/"+databaseName);
+		File file = new File(path + databaseName);
 		if (!file.exists()) {
 			file.mkdirs();
 		}
 		fileOperation.createMetaData();
+		String message = databaseName + "database created";
+		fileOperation.reportToLog(databaseName, message);
 		return true;
 	}
 	
 	public Boolean createTable (String tableName, List<Map<String, Object>> columnInfos) {
-		File dbFile = new File("File/DBDemo/" + databaseName);
+		File dbFile = new File(path + databaseName);
 		if (!dbFile.exists()) {
 			dbFile.mkdirs();
 		}
-		File tableFile = new File("File/DBDemo/" + databaseName + "/" + tableName + ".tb");
+		File tableFile = new File(path + databaseName + "/" + tableName + ".tb");
 		try {
 			tableFile.createNewFile();
 			String header = "_id:Integer/";
+			TreeMap<String, String> columnNames = new TreeMap<String, String>();
 			for (Map<String, Object> columnInfo : columnInfos) {
-				header += (String)columnInfo.get("columnName");
-				header += ":" + (String)columnInfo.get("dataType");
-				if ((Boolean)columnInfo.get("primaryKey"))
-					header += ":primaryKey";
-				if ((Boolean)columnInfo.get("foreignKey"))
-					header += ":foreignKey";
-				if ((Boolean)columnInfo.get("not null"))
-					header += ":not null";
-				if ((Boolean)columnInfo.get("unique"))
-					header += ":unique";
-				header += "/";
+				columnNames.put((String)columnInfo.get("columnName"), "columnName");
+			}
+			for (String columnName : columnNames.keySet()) {
+				for (Map<String, Object> columnInfo : columnInfos) {
+					if (!columnName.equals((String)columnInfo.get("columnName")))
+						continue;
+					header += (String)columnInfo.get("columnName");
+					header += ":" + (String)columnInfo.get("dataType");
+					if ((Boolean)columnInfo.get("primaryKey"))
+						header += ":primaryKey";
+					if ((Boolean)columnInfo.get("foreignKey"))
+						header += ":foreignKey";
+					if ((Boolean)columnInfo.get("not null"))
+						header += ":not null";
+					if ((Boolean)columnInfo.get("unique"))
+						header += ":unique";
+					header += "/";
+					break;
+				}
 			}
 			BufferedWriter out = new BufferedWriter(new FileWriter(tableFile, true));
 			out.write(header + "\r\n");
 			out.flush();
 			out.close();
-			fileOperation.reportToLog(databaseName);
-			fileOperation.createMetaData();
-			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
+		//fileOperation.createMetaData();
+		String message = tableName + "table created";
+		fileOperation.reportToLog(databaseName, message);
+		return true;
 	}
 	
 	public Boolean insertIntoTable (TreeMap<String, Object> insertColumnAndValue, String tableName) {
-		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+		String tableFileName = path + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
 		TreeMap<String, String> tableColumnMap = fileOperation.getTableHeader(tableFileName);
 		try {
@@ -86,12 +99,12 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			lineNumberReader.skip(Long.MAX_VALUE);
 			int id = lineNumberReader.getLineNumber();
 			lineNumberReader.close();
-			String insertLine = "";
+			String insertLine = String.valueOf(id) + "/";
 			for (String s : tableColumnMap.keySet()) {
 				if (insertColumnAndValue.containsKey(s))
 					insertLine += insertColumnAndValue.get(s).toString() + "/";
 				else if (s.equals("_id"))
-					insertLine += String.valueOf(id) + "/";
+					insertLine += "";
 				else
 					insertLine += "NULL/";
 			}
@@ -99,7 +112,8 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			out.write(insertLine + "\r\n");
 			out.flush();
 			out.close();
-			fileOperation.reportToLog(databaseName);
+			String message = "data inserted into " + tableName;
+			fileOperation.reportToLog(databaseName, message);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -108,7 +122,7 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 	}
 	
 	public Boolean updateDataTable (TreeMap<String, Object> updateColumnAndValue, String tableName, TreeMap<String, List<Object>> conditionColumnAndValue) {
-		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+		String tableFileName = path + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
 		String header = fileOperation.getHeaderString(tableFileName);
 		TreeMap<String, String> tableColumnMap = fileOperation.getTableHeader(tableFileName);
@@ -119,6 +133,7 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			Boolean isFit = fileOperation.checkIsSatisfyCondition(conditionColumnAndValue, columnRow);
 			if (isFit) {
 				for (String update : updateColumnAndValue.keySet()) {
+					fileOperation.reportToEventLog(databaseName, tableName, update, Integer.valueOf(s), columnRow.get(update), updateColumnAndValue.get(update).toString());
 					columnRow.put(update, updateColumnAndValue.get(update).toString());
 				}
 				String newRow = "";
@@ -137,7 +152,8 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			}
 			out.flush();
 			out.close();
-			fileOperation.reportToLog(databaseName);
+			String message = "data updated into " + tableName;
+			fileOperation.reportToLog(databaseName, message);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -147,7 +163,7 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 	}
 	
 	public Boolean deleteDataInTable (String tableName, TreeMap<String, List<Object>> conditionColumnAndValue) {
-		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+		String tableFileName = path + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
 		TreeMap<String, String> tableColumnMap = fileOperation.getTableHeader(tableFileName);
 		TreeMap<String, String> tableRowMap = fileOperation.getTableContent(tableFileName);
@@ -172,7 +188,8 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 			}
 			out.flush();
 			out.close();
-			fileOperation.reportToLog(databaseName);
+			String message = "data deleted into " + tableName;
+			fileOperation.reportToLog(databaseName, message);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -181,21 +198,24 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 	}
 	
 	public Boolean deleteTable (String tableName) {
-		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+		String tableFileName = path + databaseName + "/" + tableName + ".tb";
 		File tableFile = new File(tableFileName);
-		fileOperation.reportToLog(databaseName);
+		String message = tableName + "table deleted from " + databaseName;
+		fileOperation.reportToLog(databaseName, message);
 		fileOperation.createMetaData();
 		return tableFile.delete();
 	}
 	
 	public Boolean deleteDatabase (String databaseName) {
-		String dirName = "File/DBDemo/" + databaseName;
+		String dirName = path + databaseName;
 		File databaseDir = new File(dirName);
 		File[] listFiles = databaseDir.listFiles();
         for (File file : listFiles) {
             if (!file.delete())
             	return false;
         }
+		String message = databaseName + "database deleted";
+		fileOperation.reportToLog(databaseName, message);
         this.databaseName = "";
 		fileOperation.createMetaData();
         return databaseDir.delete();
@@ -203,16 +223,24 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 	
 	public List<TreeMap<String, String>> selectFromTable (List<String> selectColumn, String tableName, TreeMap<String, List<Object>> conditionColumnAndValue) {
 		List<TreeMap<String, String>> resultRows = new ArrayList<TreeMap<String, String>>();
-		String tableFileName = "File/DBDemo/" + databaseName + "/" + tableName + ".tb";
+		String tableFileName = path + databaseName + "/" + tableName + ".tb";
 		TreeMap<String, String> tableColumnMap = fileOperation.getTableHeader(tableFileName);
 		TreeMap<String, String> tableRowMap = fileOperation.getTableContent(tableFileName);
 		//每次取表中的一行
 		for (String s : tableRowMap.keySet()) {
-			TreeMap<String, String> columnRow = fileOperation.transferRowStringToRowMap(tableRowMap.get(s), tableColumnMap);
+
+			TreeMap<String, String> columnRow =
+					fileOperation.transferRowStringToRowMap(tableRowMap.get(s),
+			tableColumnMap);
+			System.out.println(columnRow);
 			Boolean isFit = fileOperation.checkIsSatisfyCondition(conditionColumnAndValue, columnRow);
 			if (isFit) {
 				Object[] temp = columnRow.keySet().toArray();
 				for (int n = 0; n < temp.length; n++) {
+					if (((String)temp[n]).equals("_id")) {
+						columnRow.remove((String)temp[n]);
+						continue;
+					}
 					if (!selectColumn.contains((String)temp[n]))
 						columnRow.remove((String)temp[n]);
 				}

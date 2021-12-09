@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>centdb_g16</name>
+=======
+	<name>data_modelling</name>
+>>>>>>> 5329ca6bfc558d8191b9714ab327f086244e2b9e
 	<comment></comment>
 	<projects>
 	</projects>

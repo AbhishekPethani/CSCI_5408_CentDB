@@ -26,7 +26,7 @@ public class FileParsingForQueryTest {
 //		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
 //		List<Map<String, Object>> columnInfos = new ArrayList<Map<String, Object>>();
 //		Map<String, Object> columnInfo1 = new HashMap<String, Object>();
-//		columnInfo1.put("columnName", "studentId");
+//		columnInfo1.put("columnName", "professorId");
 //		columnInfo1.put("dataType", "Integer");
 //		columnInfo1.put("primaryKey", true);
 //		columnInfo1.put("foreignKey", false);
@@ -49,33 +49,33 @@ public class FileParsingForQueryTest {
 //		columnInfo3.put("not null", true);
 //		columnInfo3.put("unique", true);
 //		columnInfos.add(columnInfo3);
-//		fileParsingForQuery.setDatabaseName("university");
-//		fileParsingForQuery.createTable("studentInfo", columnInfos);
+//		fileParsingForQuery.setDatabaseName("Demo");
+//		fileParsingForQuery.createTable("professorInfo", columnInfos);
 //	}
-	@Test
-	public void insertIntoTableTest () {
-		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
-		TreeMap<String, Object> insertColumnAndValue = new TreeMap<String, Object>();
-		insertColumnAndValue.put("studentId", "B00999999");
-		insertColumnAndValue.put("name", "Julie");
-		insertColumnAndValue.put("courseId", 5308);
-		//insertColumnAndValue.put("sex", "male");
-		fileParsingForQuery.setDatabaseName("university");
-		fileParsingForQuery.insertIntoTable(insertColumnAndValue, "studentInfo");
-	}
+//	@Test
+//	public void insertIntoTableTest () {
+//		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
+//		TreeMap<String, Object> insertColumnAndValue = new TreeMap<String, Object>();
+//		insertColumnAndValue.put("professorId", "B001111");
+//		insertColumnAndValue.put("name", "aaa");
+//		insertColumnAndValue.put("courseId", 5308);
+//		//insertColumnAndValue.put("sex", "male");
+//		fileParsingForQuery.setDatabaseName("Demo");
+//		fileParsingForQuery.insertIntoTable(insertColumnAndValue, "professorInfo");
+//	}
 //	@Test
 //	public void updateDataTableTest () {
 //		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
 //		TreeMap<String, Object> updateColumnAndValue = new TreeMap<String, Object>();
-//		updateColumnAndValue.put("age", 24);
+//		updateColumnAndValue.put("courseId", 5308);
 //		updateColumnAndValue.put("name", "Zhaoling Sun");
 //		TreeMap<String, List<Object>> conditionColumnAndValue = new TreeMap<String, List<Object>>();
 //		List<Object> condition = new ArrayList<Object>();
 //		condition.add("=");
 //		condition.add("zhaoling");
 //		conditionColumnAndValue.put("name", condition);
-//		fileParsingForQuery.setDatabaseName("student");
-//		fileParsingForQuery.updateDataTable(updateColumnAndValue, "studentInfo", conditionColumnAndValue);
+//		fileParsingForQuery.setDatabaseName("Demo");
+//		fileParsingForQuery.updateDataTable(updateColumnAndValue, "professorInfo", conditionColumnAndValue);
 //	}
 //	@Test
 //	public void deleteDataInTableTest () {
@@ -83,10 +83,10 @@ public class FileParsingForQueryTest {
 //		TreeMap<String, List<Object>> conditionColumnAndValue = new TreeMap<String, List<Object>>();
 //		List<Object> condition = new ArrayList<Object>();
 //		condition.add("=");
-//		condition.add("Tommy");
-//		conditionColumnAndValue.put("name", condition);
-//		fileParsingForQuery.setDatabaseName("student");
-//		fileParsingForQuery.deleteDataInTable("studentInfo", conditionColumnAndValue);
+//		condition.add("5308");
+//		conditionColumnAndValue.put("courseId", condition);
+//		fileParsingForQuery.setDatabaseName("Demo");
+//		fileParsingForQuery.deleteDataInTable("professorInfo", conditionColumnAndValue);
 //	}
 //	@Test
 //	public void deleteTableTest () {
@@ -99,24 +99,25 @@ public class FileParsingForQueryTest {
 //		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
 //		fileParsingForQuery.deleteDatabase("delete");
 //	}
-//	@Test
-//	public void selectFromTableTest () {
-//		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
-//		List<TreeMap<String, String>> expectResult = new ArrayList<TreeMap<String, String>>();
-//		TreeMap<String, String> expectRow = new TreeMap<String, String>();
-//		List<String> selectColumn = new ArrayList<String>();
-//		selectColumn.add("name");
-//		selectColumn.add("age");
-//		TreeMap<String, List<Object>> conditionColumnAndValue = new TreeMap<String, List<Object>>();
-//		List<Object> condition = new ArrayList<Object>();
-//		condition.add(">");
-//		condition.add(18);
-//		conditionColumnAndValue.put("age", condition);
-//		expectRow.put("age", "24");
-//		expectRow.put("name", "Zhaoling Sun");
-//		expectResult.add(expectRow);
-//		fileParsingForQuery.setDatabaseName("student");
-//		Assert.assertEquals(expectResult, fileParsingForQuery.selectFromTable(selectColumn, "studentInfo", conditionColumnAndValue));
-//	}
+	@Test
+	public void selectFromTableTest () {
+		FileParsingForQuery fileParsingForQuery = new FileParsingForQuery();
+		List<TreeMap<String, String>> expectResult = new ArrayList<TreeMap<String, String>>();
+		TreeMap<String, String> expectRow = new TreeMap<String, String>();
+		List<String> selectColumn = new ArrayList<String>();
+		selectColumn.add("name");
+		selectColumn.add("courseId");
+		TreeMap<String, List<Object>> conditionColumnAndValue = new TreeMap<String, List<Object>>();
+		List<Object> condition = new ArrayList<Object>();
+//		condition.add("=");
+//		condition.add("5308");
+//		conditionColumnAndValue.put("courseId", condition);
+		expectRow.put("age", "24");
+		expectRow.put("name", "Zhaoling Sun");
+		expectResult.add(expectRow);
+		fileParsingForQuery.setDatabaseName("Demo");
+		System.out.println(fileParsingForQuery.selectFromTable(selectColumn, "professorInfo", conditionColumnAndValue));
+		//Assert.assertEquals(expectResult, fileParsingForQuery.selectFromTable(selectColumn, "studentInfo", conditionColumnAndValue));
+	}
 
 }

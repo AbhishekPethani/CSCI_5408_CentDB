@@ -1,0 +1,4 @@
+_id:Integer/aId:INT:primaryKey/description:TEXT:not null/grade:TEXT/
+1/1/dwma/A/
+2/2/asdc/B/
+3/3/cs/A/

@@ -1,0 +1,19 @@
+courseInfo
+	_id Integer
+	courseId Integer PRIMARY_KEY
+	name String
+
+professorInfo
+	_id Integer
+	professorId Integer PRIMARY_KEY
+	name String
+	courseId Integer FOREIGN_KEY
+
+studentInfo
+	_id Integer
+	studentId Integer PRIMARY_KEY
+	name String
+	courseId Integer FOREIGN_KEY
+
+courseInfo - courseId (1) -> professorInfo - courseId (1) 
+courseInfo - courseId (1) -> studentInfo - courseId (M) 
