@@ -104,3 +104,7 @@ Log Timestamp: 1639009687220 |:| Username: dee |:| Database: CSCI5408 |:| Query:
 Log Timestamp: 1639009727806 |:| Username: dee |:| Database: CSCI5408 |:| Query: SELECT sId, aId, name FROM students; |:| Query Submission Timestamp: 2021-12-09T00:28:47.807677600Z |:| Status: Success
 Log Timestamp: 1639009765375 |:| Username: dee |:| Database: CSCI5408 |:| Query: SELECT sId, aId, name FROM students WHERE aId = 1; |:| Query Submission Timestamp: 2021-12-09T00:29:25.376693200Z |:| Status: Success
 Log Timestamp: 1639009998397 |:| Username: dee |:| Database: CSCI5408 |:| Query: USE CSCI5408; |:| Query Submission Timestamp: 2021-12-09T00:33:18.531881500Z |:| Status: Success
+Log Timestamp: 1639021009448 |:| Username: dee |:| Database: newDB |:| Query: USE newDB; |:| Query Submission Timestamp: 2021-12-09T03:36:49.512184500Z |:| Status: Success
+Log Timestamp: 1639021027882 |:| Username: dee |:| Database: newDB |:| Query: UPDATE people2 SET FirstName = 'first4', LastName= 'last4' WHERE PersonID = 103; |:| Query Submission Timestamp: 2021-12-09T03:37:07.883400200Z |:| Status: Success
+Log Timestamp: 1639022149484 |:| Username: dee |:| Database: CSCI5408 |:| Query: USE CSCI5408; |:| Query Submission Timestamp: 2021-12-09T03:55:49.492030300Z |:| Status: Success
+Log Timestamp: 1639022262914 |:| Username: dee |:| Database: CSCI5408 |:| Query: CREATE TABLE students (sId INT PRIMARY_KEY, aId INT FOREIGN_KEY, name TEXT NOT_NULL); |:| Query Submission Timestamp: 2021-12-09T03:57:42.916225100Z |:| Status: Success

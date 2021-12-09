@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author: Devarshi Vyas (b00878443)
+ * @author: Devarshi Vyas (B00878443)
  */
 
 public class Parser {

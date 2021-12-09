@@ -1,4 +1,3 @@
-// Author: Devarshi Vyas (B00878443)
 
 package QueryProcessor;
 
@@ -9,9 +8,12 @@ import log_management.QueryLogsImpl;
 import log_management.constant.QueryStatus;
 import log_management.model.QueryLogsModel;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * @author: Devarshi Vyas (B00878443)
+ */
 
 public class Processor {
     Parser parser;

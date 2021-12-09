@@ -1,6 +1,1 @@
 _id:Integer/aId:INT:foreignKey/name:TEXT:not null/sId:INT:primaryKey/
-1/1/devarshi/1/
-2/1/Zhaoling/2/
-3/2/Rajath/3/
-4/2/Abhishek/4/
-5/3/Vivek/5/

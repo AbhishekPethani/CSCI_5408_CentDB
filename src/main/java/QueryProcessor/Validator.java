@@ -1,5 +1,3 @@
-// Author: Devarshi Vyas (B00878443)
-
 package QueryProcessor;
 
 import Exceptions.InvalidSQLQueryException;
@@ -8,6 +6,10 @@ import FileParsing.FileOperation;
 import FileParsing.FileParsingForQuery;
 
 import java.util.*;
+
+/**
+ * @author: Devarshi Vyas (B00878443)
+ */
 
 public class Validator {
 

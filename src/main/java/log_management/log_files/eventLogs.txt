@@ -1,1 +1,1 @@
-Log Timestamp: 1639009687219 |:| Username: dee |:| Database: CSCI5408 |:| Message: data inserted into students |:| Timestamp: 2021-12-09T00:28:07.219506900Z
+Log Timestamp: 1639022262910 |:| Username: dee |:| Database: CSCI5408 |:| Message: studentstable created |:| Timestamp: 2021-12-09T03:57:42.911966300Z
