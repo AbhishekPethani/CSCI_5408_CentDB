@@ -1,0 +1,13 @@
+assignments
+	_id Integer
+	aId INT PRIMARY_KEY
+	description TEXT
+	grade TEXT
+
+students
+	_id Integer
+	aId INT FOREIGN_KEY
+	name TEXT
+	sId INT PRIMARY_KEY
+
+assignments - aId (1) -> students - aId (M) 

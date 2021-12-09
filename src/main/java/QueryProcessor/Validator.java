@@ -3,6 +3,7 @@
 package QueryProcessor;
 
 import Exceptions.InvalidSQLQueryException;
+import Exceptions.InvalidTransactionRequestException;
 import FileParsing.FileOperation;
 import FileParsing.FileParsingForQuery;
 
@@ -13,6 +14,8 @@ public class Validator {
     FileOperation fileOperation;
     FileParsingForQuery fileParsingForQuery;
     String currentDatabase = null;
+    String currentTransactionName = null;
+    Boolean ongoingTransaction = false;
 
     Validator() {
         this.fileOperation = new FileOperation();
@@ -107,7 +110,7 @@ public class Validator {
                         column.put("primaryKey", true);
                     }
                     column.put("foreignKey", false);
-                    if (stringObjectMap.containsKey(ColumnConstraints.FOREIGN_KEY_REFERENCES.toString())) {
+                    if (stringObjectMap.containsKey(ColumnConstraints.FOREIGN_KEY.toString())) {
                         column.put("foreignKey", true);
                     }
                     column.put("not null", false);
@@ -271,34 +274,36 @@ public class Validator {
         }
         TreeMap<String, List<Object>> conditionColumnAndValue = new TreeMap<String, List<Object>>();
         List<Object> condition = new ArrayList<Object>();
-        Map<String, Object> whereClause = (Map<String, Object>) parsedQueryData.get("whereClause");
-        switch ((Operators) whereClause.get("operator")) {
-            case EQUAL:
+        List<TreeMap<String, String>> rows = new ArrayList<>();
+        if (parsedQueryData.containsKey("whereClause")) {
+            Map<String, Object> whereClause = (Map<String, Object>) parsedQueryData.get("whereClause");
+            switch ((Operators) whereClause.get("operator")) {
+                case EQUAL:
                 case GREATER_THAN:
-            case LESS_THAN: {
-                condition.add(((Operators) whereClause.get("operator")).operator);
-                condition.add(((String) whereClause.get("valueOperand")).replace("'", ""));
-                break;
+                case LESS_THAN: {
+                    condition.add(((Operators) whereClause.get("operator")).operator);
+                    condition.add(((String) whereClause.get("valueOperand")).replace("'", ""));
+                    break;
+                }
+                case BETWEEN:
+                    break;
+                case NOT_EQUAL:
+                    break;
+                case LESS_THAN_EQUAL_TO:
+                    break;
+                case GREATER_THAN_EQUAL_TO:
+                    break;
+                case ASTERISK:
+                case IN:
+                case LIKE:
+                case NULL:
+                    break;
             }
-            case BETWEEN:
-                break;
-            case NOT_EQUAL:
-                break;
-            case LESS_THAN_EQUAL_TO:
-                break;
-            case GREATER_THAN_EQUAL_TO:
-                break;
-            case ASTERISK:
-            case IN:
-            case LIKE:
-            case NULL:
-                break;
+            conditionColumnAndValue.put(((String) whereClause.get("columnOperand")), condition);
         }
-        conditionColumnAndValue.put(((String) whereClause.get("columnOperand")), condition);
-        List<TreeMap<String, String>> rows =
-                this.fileParsingForQuery.selectFromTable((ArrayList<String>) parsedQueryData.get(
-                "columns"), (String) parsedQueryData.get("tableName"),
-                conditionColumnAndValue);
+        rows = this.fileParsingForQuery.selectFromTable((ArrayList<String>) parsedQueryData.get(
+                                "columns"), (String) parsedQueryData.get("tableName"),
+                        conditionColumnAndValue);
         validatedQueryData.put("executed", true);
         validatedQueryData.put("queryType", parsedQueryData.get("queryType").toString());
         validatedQueryData.put("rows", rows);
@@ -318,31 +323,57 @@ public class Validator {
         return validatedQueryData;
     }
 
+    Map<String, Object> validateTranasactionQueries(Map<String, Object> parsedQueryData) throws InvalidTransactionRequestException {
+        Map<String, Object> validatedQueryData = new HashMap<>();
 
-    public Map<String, Object> validateQuery(Map<String, Object> parsedQueryData) {
+        if (parsedQueryData.get("queryType").equals(QueryType.BEGIN_TRANSACTION)) {
+            if (this.ongoingTransaction != null) {
+                throw new InvalidTransactionRequestException("Invalid Transaction Command - Only one transaction can " +
+                        "be run at a time from a single client");
+            }
+            this.ongoingTransaction = true;
+            this.currentTransactionName = (String) parsedQueryData.get("transactionName");
+            // go to the transaction manager
+        } else if (parsedQueryData.get("queryType").equals(QueryType.COMMIT)) {
+
+        } else if (parsedQueryData.get("queryType").equals(QueryType.ROLLBACK)) {
+            if (this.ongoingTransaction == null) {
+                throw new InvalidTransactionRequestException("Invalid Transaction Command - No transaction is ongoing" +
+                        " on this client.");
+            }
+            this.ongoingTransaction = true;
+            this.currentTransactionName = (String) parsedQueryData.get("transactionName");
+        } else {
+            throw new InvalidTransactionRequestException("Invalid Transaction Command");
+        }
+
+        return validatedQueryData;
+    }
+
+    public Map<String, Object> validateQuery(Map<String, Object> parsedQueryData) throws InvalidTransactionRequestException {
         Map<String, Object> validatedQueryData = new HashMap<>();
         QueryType type = (QueryType) parsedQueryData.get("queryType");
         switch (type) {
             case CREATE_DATABASE:
-                validatedQueryData = this.validateCreateDatabaseQuery(parsedQueryData); //
+                validatedQueryData = this.validateCreateDatabaseQuery(parsedQueryData);
                 break;
             case DROP_DATABASE:
-                validatedQueryData = this.validateDropDatabaseQuery(parsedQueryData); //
+                validatedQueryData = this.validateDropDatabaseQuery(parsedQueryData);
                 break;
             case USE_DATABASE:
-                validatedQueryData = this.validateUseDatabaseQuery(parsedQueryData); //
+                validatedQueryData = this.validateUseDatabaseQuery(parsedQueryData);
                 break;
             case INSERT_INTO:
-                validatedQueryData = this.validateInsertIntoQuery(parsedQueryData); //
+                validatedQueryData = this.validateInsertIntoQuery(parsedQueryData);
                 break;
             case CREATE_TABLE:
-                validatedQueryData = this.validateCreateTableQuery(parsedQueryData); //
+                validatedQueryData = this.validateCreateTableQuery(parsedQueryData);
                 break;
             case DROP_TABLE:
-                validatedQueryData = this.validateDeleteTableQuery(parsedQueryData); //
+                validatedQueryData = this.validateDeleteTableQuery(parsedQueryData);
                 break;
             case SELECT_FROM:
-                validatedQueryData = this.validateSelectFromQuery(parsedQueryData); //
+                validatedQueryData = this.validateSelectFromQuery(parsedQueryData);
                 break;
             case UPDATE:
                 validatedQueryData = this.validateUpdateQuery(parsedQueryData);
@@ -351,11 +382,16 @@ public class Validator {
                 validatedQueryData = this.validateDeleteFromQuery(parsedQueryData);
                 break;
             case BEGIN_TRANSACTION:
-                break;
             case COMMIT:
+            case ROLLBACK: {
+                try {
+                    validatedQueryData = this.validateTranasactionQueries(parsedQueryData);
+                } catch (InvalidTransactionRequestException e) {
+                    e.printStackTrace();
+                    throw e;
+                }
                 break;
-            case ROLLBACK:
-                break;
+            }
             default:
                 throw new InvalidSQLQueryException("Invalid SQL Query Entered");
         }

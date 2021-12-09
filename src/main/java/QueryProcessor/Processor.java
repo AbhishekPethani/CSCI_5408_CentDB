@@ -3,6 +3,11 @@
 package QueryProcessor;
 
 import Exceptions.InvalidSQLQueryException;
+import Exceptions.InvalidTransactionRequestException;
+import log_management.QueryLogs;
+import log_management.QueryLogsImpl;
+import log_management.constant.QueryStatus;
+import log_management.model.QueryLogsModel;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -11,25 +16,45 @@ import java.util.Map;
 public class Processor {
     Parser parser;
     Validator validator;
+    QueryLogsImpl queryLogs;
 
-    Processor() {
+    public Processor() {
         this.parser = new Parser();
         this.validator = new Validator();
+        this.queryLogs = QueryLogsImpl.getQueryLogsInstance();
+    }
+
+    private void logQueryStatus(String query, Boolean status) {
+        QueryLogsModel qModel = QueryLogsModel.getQueryLogModelInstance();
+        qModel.setQuery(query);
+        if (status) {
+            qModel.setQueryStatus(QueryStatus.SUCCESS);
+        } else {
+            qModel.setQueryStatus(QueryStatus.FAILED);
+        }
+        this.queryLogs.queryLogsEntry(qModel);
     }
 
     public Map<String, Object> submitQuery(String query) {
         Map<String, Object> result = new HashMap<>();
 
         long queryId = System.currentTimeMillis();
-        System.out.println("Query id: " + System.currentTimeMillis() + " Timestamp: " + new Date(queryId) + " Submitted");
 
         try {
+
             Map<String, Object> parsedQueryData = this.parser.parseQuery(queryId, query);
             result = this.validator.validateQuery(parsedQueryData);
         } catch (InvalidSQLQueryException error) {
+            this.logQueryStatus(query, false);
             throw error;
+        } catch (InvalidTransactionRequestException error) {
+            this.logQueryStatus(query, false);
+//            throw error;
+        } catch (RuntimeException error) {
+            this.logQueryStatus(query, false);
         }
 
+        this.logQueryStatus(query, (Boolean) result.get("executed"));
         return result;
     }
 }
@@ -82,7 +107,7 @@ enum ColumnConstraints {
     PRIMARY_KEY("PRIMARY_KEY"),
     NOT_NULL("NOT_NULL"),
     UNIQUE("UNIQUE"),
-    FOREIGN_KEY_REFERENCES("FOREIGN_KEY_REFERENCES");
+    FOREIGN_KEY("FOREIGN_KEY");
 
     public String constraint;
 
@@ -106,7 +131,7 @@ enum Operators {
     GREATER_THAN(">"),
     LESS_THAN("<"),
     GREATER_THAN_EQUAL_TO(">="),
-    LESS_THAN_EQUAL_TO("<"),
+    LESS_THAN_EQUAL_TO("<="),
     NOT_EQUAL("<>"),
     BETWEEN("BETWEEN"),
     LIKE("LIKE"),

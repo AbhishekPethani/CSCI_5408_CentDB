@@ -76,13 +76,14 @@ public class FileOperation implements FileOperationInterface {
 	public TreeMap<String, String> transferRowStringToRowMap (String row, TreeMap<String, String> header) {
 		TreeMap<String, String> columnRow = new TreeMap<String, String>();
 		String[] rowValue = row.split("/");
-		int i = 0;
-		columnRow.put("_id",rowValue[0]);
+		int i = 1;
+		columnRow.put("_id", rowValue[0]);
+		header.remove("_id");
 		for (String column : header.keySet()) {
-			if (column.equals("_id")) {
-				i++;
-				continue;
-			}
+//			if (column.equals("_id")) {
+//				i++;
+//				continue;
+//			}
 			columnRow.put(column, rowValue[i]);
 			i++;
 		}

@@ -228,7 +228,10 @@ public class FileParsingForQuery implements FileParsingForQueryInterface {
 		TreeMap<String, String> tableRowMap = fileOperation.getTableContent(tableFileName);
 		//每次取表中的一行
 		for (String s : tableRowMap.keySet()) {
-			TreeMap<String, String> columnRow = fileOperation.transferRowStringToRowMap(tableRowMap.get(s), tableColumnMap);
+
+			TreeMap<String, String> columnRow =
+					fileOperation.transferRowStringToRowMap(tableRowMap.get(s),
+			tableColumnMap);
 			System.out.println(columnRow);
 			Boolean isFit = fileOperation.checkIsSatisfyCondition(conditionColumnAndValue, columnRow);
 			if (isFit) {

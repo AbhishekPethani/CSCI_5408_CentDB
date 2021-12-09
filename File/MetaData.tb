@@ -1,17 +1,16 @@
 {
-	database:newDB
+	database:CSCI5408
 	table:{
-			people2:{
-							FirstName:TEXT|not null
-							LastName:TEXT
-							PersonID:INT|primaryKey
-							_id:Integer
-						}
 			}
 };
 {
-	database:university
+	database:Demo
 	table:{
+			courseInfo:{
+							_id:Integer
+							courseId:Integer|primaryKey|not null|unique
+							name:String|not null
+						}
 			professorInfo:{
 							_id:Integer
 							courseId:Integer|foreignKey|not null|unique
@@ -20,9 +19,43 @@
 						}
 			studentInfo:{
 							_id:Integer
-							courseId:Integer|foreignKey|not null|unique
+							courseId:Integer|foreignKey|not null
 							name:String|not null
 							studentId:Integer|primaryKey|not null|unique
+						}
+			}
+};
+{
+	database:newDB
+	table:{
+			people2:{
+							FirstName:TEXT|not null
+							LastName:TEXT
+							PersonID:INT|primaryKey
+							_id:Integer
+						}
+			people3:{
+							FirstName:TEXT|not null
+							LastName:TEXT
+							PersonID:INT
+							_id:Integer
+						}
+			people4:{
+							FirstName:TEXT|not null
+							LastName:TEXT
+							PersonID:INT|foreignKey
+							_id:Integer
+						}
+			}
+};
+{
+	database:testDB
+	table:{
+			testTable:{
+							_id:Integer
+							col1:INT|primaryKey
+							col2:TEXT|not null
+							col3:INT
 						}
 			}
 };

@@ -1,0 +1,1 @@
+_id:Integer/FirstName:TEXT:not null/LastName:TEXT/PersonID:INT:foreignKey/
