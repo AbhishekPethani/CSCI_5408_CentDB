@@ -26,6 +26,7 @@ public class GenerateSQLDump implements IGenerateSQLDump {
 		
 		// write query to create database in .sql file
 		bf.write("CREATE DATABASE " + databaseName + ";\n\n");
+		bf.write("USE " + databaseName + ";\n\n");
 		
 		// loop through all the tables and create it
 		for(File table : tables) {

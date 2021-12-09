@@ -107,7 +107,7 @@ enum ColumnConstraints {
     PRIMARY_KEY("PRIMARY_KEY"),
     NOT_NULL("NOT_NULL"),
     UNIQUE("UNIQUE"),
-    FOREIGN_KEY_REFERENCES("FOREIGN_KEY_REFERENCES");
+    FOREIGN_KEY("FOREIGN_KEY");
 
     public String constraint;
 

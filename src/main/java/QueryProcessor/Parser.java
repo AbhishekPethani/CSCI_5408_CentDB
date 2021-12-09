@@ -92,9 +92,9 @@ public class Parser {
                     for (int index = 2; index < data.length; index++) {
                         if (ColumnConstraints.contains(data[index])) {
                             columnData.put(data[index].toUpperCase(), true);
-                            if (ColumnConstraints.valueOf(data[index]).equals(ColumnConstraints.FOREIGN_KEY_REFERENCES)) {
-                                // Foreign Key
-                            }
+//                            if (ColumnConstraints.valueOf(data[index]).equals(ColumnConstraints.FOREIGN_KEY)) {
+//
+//                            }
                         } else {
                             throw new InvalidSQLQueryException("Incorrect constraint passed in the CREATE TABLE QUERY" +
                                     ".");

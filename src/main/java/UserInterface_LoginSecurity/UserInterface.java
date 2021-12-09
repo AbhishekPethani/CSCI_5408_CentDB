@@ -151,6 +151,7 @@ public class UserInterface {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                chooseOption();
                 break;
             case 3:
                 String databaseName2;
@@ -162,6 +163,7 @@ public class UserInterface {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                chooseOption();
                 break;
             case 4:
                 System.out.println("1.Show analytics by Database");

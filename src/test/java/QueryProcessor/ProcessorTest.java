@@ -25,7 +25,8 @@ public class ProcessorTest {
     public void submitCreateTableQueryTest() {
         Processor processor = new Processor();
         System.out.println(processor.submitQuery("USE newDB;"));
-        System.out.println(processor.submitQuery("CREATE TABLE people3 (PersonID INT PRIMARY_KEY, LastName TEXT, " +
+        System.out.println(processor.submitQuery("CREATE TABLE people4 (PersonID INT FOREIGN_KEY, " +
+                "LastName TEXT, " +
                 "FirstName TEXT NOT_NULL);"));
     }
 
@@ -40,7 +41,7 @@ public class ProcessorTest {
     public void submitSelectTableQueryTest() {
         Processor processor = new Processor();
         System.out.println(processor.submitQuery("USE newDB;"));
-        System.out.println(processor.submitQuery("SELECT FirstName, LastName, PersonID FROM people2;"));
+        System.out.println(processor.submitQuery("SELECT FirstName, LastName FROM people2 WHERE FirstName = first1;"));
     }
 
     @Test

@@ -110,7 +110,7 @@ public class Validator {
                         column.put("primaryKey", true);
                     }
                     column.put("foreignKey", false);
-                    if (stringObjectMap.containsKey(ColumnConstraints.FOREIGN_KEY_REFERENCES.toString())) {
+                    if (stringObjectMap.containsKey(ColumnConstraints.FOREIGN_KEY.toString())) {
                         column.put("foreignKey", true);
                     }
                     column.put("not null", false);
